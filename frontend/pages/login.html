@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Sistema - Laboratorio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+
+    <form id="loginForm">
+
+        <img src="../img/logo.jpg" alt="Logo URU" class="img-sistema">
+
+        <h2>Control de Equipos</h2>
+
+        <label for="username">Usuario</label>
+        <input type="text" id="username" placeholder="Usuario" required>
+
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="Contraseña" required>
+
+        <div class="box-visible">
+            <input type="checkbox" id="visible">
+            <label for="visible">Ver clave</label>
+        </div>
+
+        <button type="submit" id="submit">Acceder al Sistema</button>
+
+        <p class="text-center">¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
+
+    </form>
+
+    <script src="../js/login.js"></script>
+</body>
+
+</html>

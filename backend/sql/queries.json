@@ -1,0 +1,17 @@
+{
+  "createPersona": {
+    "text": "INSERT INTO persona (nombre, cedula, correo) VALUES ($1, $2, $3) RETURNING *;"
+  },
+  "findPersonaById": {
+    "text": "SELECT * FROM persona WHERE id_persona = $1;"
+  },
+  "createUsuario": {
+    "text": "INSERT INTO usuario (id_persona, usuario, contrasena) VALUES ($1, $2, $3) RETURNING *;"
+  },
+  "findUsuarioByUsername": {
+    "text": "SELECT * FROM usuario WHERE usuario = $1;"
+  },
+  "findUsuarioById": {
+    "text": "SELECT * FROM usuario WHERE id_usuario = $1;"
+  }
+}

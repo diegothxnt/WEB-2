@@ -1,0 +1,28 @@
+{
+  "name": "gestion_componentes_equipos",
+  "version": "1.0.0",
+  "description": "Sistema de inventario",
+  "main": "backend/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "keywords": [],
+  "author": "Equipo de Desarrollo",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "connect-pg-simple": "^8.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.1",
+    "pg": "^8.11.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
