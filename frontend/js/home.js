@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     if (res.ok) {
-      window.location.href = "/home.html";
+      window.location.href = "home.html";
     }
   } catch (error) {
     console.log("No hay sesion activa");
