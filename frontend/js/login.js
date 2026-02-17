@@ -41,3 +41,18 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         console.error(err);
     }
 });
+
+// Verificar sesion al cargar la página
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch("/api/users/me", {
+      credentials: "include"
+    });
+
+    if (res.ok) {
+      window.location.href = "home.html";
+    }
+  } catch (error) {
+    console.log("No hay sesion activa");
+  }
+});
