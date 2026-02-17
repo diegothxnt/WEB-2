@@ -1,4 +1,4 @@
-const session = require("express-session");
+import session from ("express-session");
 
 class SessionComponent {
     constructor(app) {

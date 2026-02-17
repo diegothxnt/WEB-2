@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 
 // Endpoint de prueba
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/pages/login.html"));
+    res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
 export default app;
