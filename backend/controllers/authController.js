@@ -4,7 +4,7 @@
 
 import { createUsuario, findUsuario } from "../models/usuarioModel.js";
 import { createPersona } from "../models/personaModel.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 /**
  * POST /api/auth/register
@@ -58,9 +58,19 @@ export async function loginController(req, res) {
  * POST /api/auth/logout
  */
 export function logoutController(req, res) {
-  req.session.destroy(err => {
-    if (err) return res.status(500).json({ error: "Error al cerrar sesión" });
-    res.clearCookie("connect.sid");
+  // Forzar expiración de la cookie
+  const cookieOptions = {
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,
+    expires: new Date(0)
+  };
+  req.session?.destroy?.(() => {
+    res.clearCookie("connect.sid", cookieOptions);
     return res.json({ message: "Sesión finalizada" });
-  });
+  }) ?? (function() {
+    res.clearCookie("connect.sid", cookieOptions);
+    return res.json({ message: "Sesión finalizada" });
+  })();
 }

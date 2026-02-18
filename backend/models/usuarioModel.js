@@ -3,7 +3,7 @@
  */
 
 import db from "../db/db.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import queries from "../sql/queries.json" with { type: "json" };
 
 /**
