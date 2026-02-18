@@ -20,35 +20,7 @@
         <a href="#" id="logoutBtn" class="logout-link">Cerrar Sesión</a>
     </main>
 
-    <script>
-        // Verificar sesión
-        async function verificarAcceso() {
-            const respuesta = await fetch("/api/users/me", {
-                credentials: "include"
-            });
-
-            if (!respuesta.ok) {
-                window.location.href = "login.html";
-                return;
-            }
-
-            const data = await respuesta.json();
-            document.getElementById("welcomeText").innerText =
-                `Bienvenido ${data.user.usuario}`;
-        }
-
-        verificarAcceso();
-
-        // Cerrar sesión
-        document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-            e.preventDefault();
-            await fetch("/api/auth/logout", {
-                method: "POST",
-                credentials: "include"
-            });
-            window.location.href = "login.html";
-        });
-    </script>
+    <script src="../js/homeHome.js"></script>
 
 </body>
 
