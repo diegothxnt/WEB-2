@@ -4,7 +4,7 @@
 
 import { createUsuario, findUsuario } from "../models/usuarioModel.js";
 import { createPersona } from "../models/personaModel.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 /**
  * POST /api/auth/register

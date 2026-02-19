@@ -4,10 +4,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       credentials: "include"
     });
 
-    if (res.ok) {
-      window.location.href = "home.html";
+    if (res.status === 401) {
+      window.location.replace("login.html");
+      return;
     }
+
+    if (res.status === 200) {
+      const data = await res.json();
+      document.getElementById("welcomeText").innerText =
+        `Bienvenido ${data.user.usuario}`;
+    }
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+      window.location.replace("login.html");
+    });
+
   } catch (error) {
-    console.log("No hay sesion activa");
+    console.error("Error verificando sesión:", error);
+    window.location.replace("login.html");
   }
 });

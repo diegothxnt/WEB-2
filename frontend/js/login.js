@@ -49,10 +49,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       credentials: "include"
     });
 
-    if (res.ok) {
-      window.location.href = "home.html";
+    // Redirige a home si ya hay sesión activa
+    if (res.status === 200) {
+      if (!window.location.pathname.includes("home")) {
+        window.location.replace("home.html");
+      }
     }
+
   } catch (error) {
-    console.log("No hay sesion activa");
+    console.error("Error verificando sesión:", error);
   }
 });
