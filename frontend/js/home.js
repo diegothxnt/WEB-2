@@ -1,10 +1,12 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch("/api/users/me", {
+      method: "GET",
       credentials: "include"
     });
 
-    if (res.status === 401) {
+    if (res.status !== 200) {
+      alert("Sesion caducada");
       window.location.replace("login.html");
       return;
     }

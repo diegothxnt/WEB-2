@@ -30,8 +30,8 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
         const data = await res.json();
 
-        if (res.ok) {
-            window.location.href = "home.html";
+        if (res.status === 200) {
+            window.location.replace("home.html");
         } else {
             alert("Error de autenticación: " + (data.error || "Usuario/clave incorrectos"));
             passwordInput.value = "";
@@ -40,23 +40,4 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         alert("Error al conectar con el servidor.");
         console.error(err);
     }
-});
-
-// Verificar sesion al cargar la página
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const res = await fetch("/api/users/me", {
-      credentials: "include"
-    });
-
-    // Redirige a home si ya hay sesión activa
-    if (res.status === 200) {
-      if (!window.location.pathname.includes("home")) {
-        window.location.replace("home.html");
-      }
-    }
-
-  } catch (error) {
-    console.error("Error verificando sesión:", error);
-  }
 });

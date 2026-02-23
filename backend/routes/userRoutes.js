@@ -3,11 +3,17 @@
  */
 
 import { Router } from "express";
-import { ensureAuth } from "../middlewares/authMiddleware.js";
 import { profileController } from "../controllers/userController.js";
-
+import { dispatcher } from "../dispatcher.js";
 const router = Router();
 
-router.get("/me", ensureAuth, profileController);
+router.get(
+    "/me",
+    dispatcher({
+    action: "profile",
+    requiresAuth: true,
+    handler: profileController
+    })
+);
 
 export default router;
