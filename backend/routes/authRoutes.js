@@ -8,11 +8,35 @@ import {
   logoutController,
   registerController
 } from "../controllers/authController.js";
+import { dispatcher } from "../dispatcher.js";
 
 const router = Router();
 
-router.post("/login", loginController);
-router.post("/logout", logoutController);
-router.post("/register", registerController);
+router.post(
+  "/login",
+  dispatcher({
+    action: "login",
+    requiresAuth: false,
+    handler: loginController
+  })
+);
+
+router.post(
+  "/logout",
+    dispatcher({
+    action: "logout",
+    requiresAuth: true,
+    handler: logoutController
+  })
+);
+
+router.post(
+  "/register",
+    dispatcher({
+    action: "register",
+    requiresAuth: false,
+    handler: registerController
+  })
+);
 
 export default router;

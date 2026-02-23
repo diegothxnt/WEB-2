@@ -21,7 +21,8 @@ const sessionMiddleware = session({
   cookie: {
     maxAge: parseInt(process.env.SESSION_MAX_AGE),
     secure: false,
-    httpOnly: true
+    httpOnly: true,
+    sameSite: "lax"
   }
 });
 

@@ -4,7 +4,7 @@
 
 import { createUsuario, findUsuario } from "../models/usuarioModel.js";
 import { createPersona } from "../models/personaModel.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 /**
  * POST /api/auth/register
@@ -37,10 +37,10 @@ export async function loginController(req, res) {
     const { usuario, contrasena } = req.body;
     const user = await findUsuario(usuario);
 
-    if (!user) return res.status(400).json({ error: "Usuario no existe" });
+    if (!user) return res.status(400).json({ error: "usuario o contrasena incorrectos" });
 
     const ok = await bcrypt.compare(contrasena, user.contrasena);
-    if (!ok) return res.status(400).json({ error: "Clave incorrecta" });
+    if (!ok) return res.status(400).json({ error: "usuario o contraseña incorrectos" });
 
     // Guardar en sesión
     req.session.user = {
@@ -48,7 +48,14 @@ export async function loginController(req, res) {
       usuario: user.usuario
     };
 
-    return res.json({ message: "Autenticado" });
+    req.session.save(err => {
+      if (err) {
+        console.error("Error guardando sesion:", err);
+        return res.status(500).json({ error: "Error al guardar la sesion" });
+      }
+      return res.json({ message: "Autenticado" });
+    });
+
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
