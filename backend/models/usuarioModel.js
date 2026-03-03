@@ -2,8 +2,7 @@
  * @file Modelo para usuario (usa SQL desde queries.json)
  */
 
-import DbComponent from '../db/dbComponent.js';
-const db = new DbComponent();
+import db from "../db/db.js";
 import bcrypt from "bcrypt";
 import queries from "../sql/queries.json" with { type: "json" };
 
