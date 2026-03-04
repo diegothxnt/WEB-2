@@ -3,30 +3,12 @@ import connectPg from "connect-pg-simple";
 import dotenv from "dotenv";
 import fs from "fs";
 import db from "./db/db.js";
+import resolveValue from "./utils/resolveValue.js";
 dotenv.config();
 
 const rawConfig = JSON.parse(
     fs.readFileSync(new URL("./config/sessionConfig.json", import.meta.url), "utf-8")
 );
-
-function resolveValue(value){
-    if (typeof value === "string"){
-        const envMatch = value.match(/^\$\{([^:}]+)(?::([^}]+))?\}$/);
-        if (envMatch) {
-            const key = envMatch[1];
-            const def = envMatch[2];
-            return process.env[key];
-        }
-        return value;
-    }
-    if (Array.isArray(value)) return value.map(resolveValue);
-    if (value && typeof value === "object") {
-        const out = {};
-        for (const k of Object.keys(value)) out[k] = resolveValue(value[k]);
-        return out;
-    }
-    return value;
-}
 
 const config = resolveValue(rawConfig);
 const PgSession = connectPg(session);

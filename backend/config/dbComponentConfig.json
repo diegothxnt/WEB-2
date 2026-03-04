@@ -1,0 +1,11 @@
+{
+  "database": {
+    "user": "${DATABASE_USER}",
+    "password": "${DATABASE_PASSWORD}",
+    "host": "${DATABASE_HOST}",
+    "port": "${DATABASE_PORT}",
+    "database": "${DATABASE_NAME}",
+    "ssl": "${DATABASE_SSL}",
+    "channel_binding": "${CHANNEL_BINDING}"
+  }
+}
