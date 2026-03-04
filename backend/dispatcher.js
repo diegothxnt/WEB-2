@@ -12,11 +12,17 @@
  * @return {Function} Middleware de Express
  */
 
-export function dispatcher({ action, requiresAuth = false, handler }) {
-    return async (req, res, next) => {
+export class Dispatcher {
+    constructor({ action, requiresAuth = false, handler }) {
+        this.action = action;
+        this.requiresAuth = requiresAuth;
+        this.handler = handler;
+    }
+
+    async handle(req, res, next) {
         try {
             // Validar sesion
-            if (requiresAuth && !req.session?.user) {
+            if (this.requiresAuth && !req.session?.user) {
                 return res.status(401).json({
                     success: false,
                     message: "No autorizado"
@@ -24,23 +30,29 @@ export function dispatcher({ action, requiresAuth = false, handler }) {
             }
             
             // Ejecutar handler
-            const result = await handler(req, res, next);
+            const result = await this.handler(req, res, next);
 
             if (req.session) {
                 await new Promise((resolve, reject) => {
                     req.session.save(err => err ? reject(err) : resolve());
                 }).catch(err => {
-                console.error("[dispatcher] error saving session:", err);
+                console.error("[Dispatcher] error saving session:", err);
                 });
             }
 
             return result;
         } catch (error) {
-            console.error(`[Dispatcher] Error en accion ${action}:`, error);
+            console.error(`[Dispatcher] Error en accion ${this.action}:`, error);
             return res.status(500).json({
                 success: false,
                 message: "Error interno del servidor"
             });
         }
     }
+
+    middleware() {
+        return this.handle.bind(this);
+    }
 }
+
+export default Dispatcher;
