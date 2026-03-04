@@ -1,0 +1,14 @@
+{
+  "store": {
+    "tableName": "${SESSION_TABLE}"
+  },
+  "secret": "${SESSION_SECRET}",
+  "resave": false,
+  "saveUninitialized": false,
+  "cookie": {
+    "maxAge": "${SESSION_MAX_AGE}",
+    "secure": "${SESSION_COOKIE_SECURE:false}",
+    "httpOnly": true,
+    "sameSite": "lax"
+  }
+}

@@ -2,8 +2,6 @@
  * @file Dispatcher para manejar sesiones y seguridad
  */
 
-import { Result } from "pg";
-
 /**
  * Ejecuta una accion controlando errores y asegurando autenticacion
  * 
