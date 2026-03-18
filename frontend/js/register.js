@@ -1,34 +1,27 @@
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
+document.getElementById("registerForm").addEventListener("submit", async function (e) {
     e.preventDefault();
-
-    const nombre  = document.getElementById("nombre").value.trim();
-    const cedula  = document.getElementById("cedula").value.trim();
-    const correo  = document.getElementById("correo").value.trim();
-    const usuario = document.getElementById("regUsername").value.trim();
-    const contrasena = document.getElementById("regPassword").value.trim();
-
-    if (!nombre || !cedula || !correo || !usuario || !contrasena) {
-        alert("Completa todos los campos.");
-        return;
-    }
+    const data = {
+        nombre: document.getElementById("nombre").value,
+        cedula: document.getElementById("cedula").value,
+        correo: document.getElementById("correo").value,
+        usuario: document.getElementById("regUsername").value,
+        contrasena: document.getElementById("regPassword").value
+    };
 
     try {
-        const res = await fetch("/api/auth/register", {
+        const respuesta = await fetch("http://localhost:4000/toProcess", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombre, cedula, correo, usuario, contrasena })
+            body: JSON.stringify({ clase: "Auth", metodo: "register", data })
         });
 
-        const data = await res.json();
-
-        if (res.ok) {
-            alert("Usuario registrado con éxito. Ahora puedes iniciar sesión.");
-            window.location.href = "login.html";
+        const resultado = await respuesta.json();
+        if (resultado.success || resultado.user) {
+            window.location.href = "login.html"; // Salto automático al login
         } else {
-            alert("Error al registrar: " + (data.error || "Verifica la información"));
+            alert("Error: " + (resultado.error || "No se pudo registrar"));
         }
-    } catch (err) {
-        alert("Error al conectar con el servidor.");
-        console.error(err);
+    } catch (error) {
+        console.error("Error:", error);
     }
 });

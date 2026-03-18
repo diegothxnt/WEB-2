@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> - Administrador de Seguridad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin_style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="main-sidebar">
+            <div class="brand">
+                <img src="../img/logo.jpg" alt="Logo URU">
+                <span>SISTEMA </span>
+            </div>
+
+            <nav class="menu-groups">
+                <div class="group-title">GESTIÓN DE IDENTIDAD</div>
+                <div class="menu-item" onclick="toggleMenu('m-identidad')">
+                    <span class="icon">👥</span> Usuarios y Personas
+                    <div id="m-identidad" class="submenu">
+                        <a href="#" onclick="render('mant_usuario')">Mant. Usuario</a>
+                        <a href="#" onclick="render('mant_persona')">Mant. Persona</a>
+                        <a href="#" onclick="render('mant_grupo')">Mant. Grupo</a>
+                    </div>
+                </div>
+
+                <div class="group-title">INFRAESTRUCTURA</div>
+                <div class="menu-item" onclick="toggleMenu('m-sistema')">
+                    <span class="icon">🏗️</span> Componentes Sistema
+                    <div id="m-sistema" class="submenu">
+                        <a href="#" onclick="render('mant_subsistema')">Mant. Subsistema</a>
+                        <a href="#" onclick="render('mant_objetos')">Mant. Objetos</a>
+                        <a href="#" onclick="render('mant_metodos')">Mant. Métodos</a>
+                    </div>
+                </div>
+
+                <div class="group-title">CONTROL DE ACCESO</div>
+                <div class="menu-item" onclick="toggleMenu('m-permisos')">
+                    <span class="icon">🔐</span> Perfiles y Permisos
+                    <div id="m-permisos" class="submenu">
+                        <a href="#" onclick="render('mant_perfil')">Mant. Perfil</a>
+                        <a href="#" onclick="render('asig_permisos')">Asignar Permisos</a>
+                        <a href="#" onclick="render('asig_perfil_usu')">Asignar Perfil a Usuario</a>
+                        <a href="#" onclick="render('mant_permisos_base')">Mant. Permisos</a>
+                        <a href="#" onclick="render('opciones_menu')">Opciones Menú</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn-exit">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <main class="main-viewport">
+            <header class="top-bar">
+                <h2 id="view-title">Dashboard Principal</h2>
+                <div class="user-info">
+                    <strong>Administrador</strong>
+                    <div class="status-dot"></div>
+                </div>
+            </header>
+
+            <section class="content-area">
+                <div id="dynamic-content">
+                    <div class="welcome-box">
+                        <h3>Bienvenido al Módulo de Seguridad</h3>
+                        <p>Seleccione una opción del menú para gestionar el sistema.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> - Portal del Estudiante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin_style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="main-sidebar">
+            <div class="brand">
+                <img src="../img/logo.jpg" alt="Logo URU">
+                <span> ESTUDIANTE</span>
+            </div>
+            <nav class="menu-groups">
+                <div class="group-title">MI CUENTA</div>
+                <div class="menu-item" onclick="render('perfil')"><span>👤</span> Mi Perfil</div>
+                <div class="menu-item" onclick="render('mis_prestamos')"><span>📅</span> Mis Préstamos</div>
+                
+                <div class="group-title">LABORATORIO</div>
+                <div class="menu-item" onclick="render('catalogo')"><span>🔍</span> Ver Inventario</div>
+                <div class="menu-item" onclick="render('solicitar')"><span>📝</span> Solicitar Equipo</div>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn-exit">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <main class="main-viewport">
+            <header class="top-bar">
+                <h2 id="view-title">Portal Estudiantil</h2>
+                <div class="user-info"><strong>Estudiante: Ana López</strong><div class="status-dot"></div></div>
+            </header>
+            <section class="content-area">
+                <div id="dynamic-content">
+                    <div class="welcome-box">
+                        <h3>¡Hola, Ana!</h3>
+                        <p>Consulta la disponibilidad de equipos y revisa tus fechas de entrega.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="../js/estudiante.js"></script>
+</body>
+</html>

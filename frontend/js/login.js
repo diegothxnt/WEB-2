@@ -1,43 +1,28 @@
-const submitBtn = document.getElementById("submit"),
-      passwordInput = document.getElementById("password"),
-      usernameInput = document.getElementById("username"),
-      visibleCheckbox = document.getElementById("visible");
-
-// Mostrar u ocultar clave
-visibleCheckbox.addEventListener("change", () => {
-    passwordInput.type = visibleCheckbox.checked ? "text" : "password";
-});
-
-// Login
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
-
-    const usuario = usernameInput.value.trim();
-    const contrasena = passwordInput.value.trim();
-
-    if (!usuario || !contrasena) {
-        alert("Por favor rellene todos los campos");
-        return;
-    }
+    const usuario = document.getElementById("username").value;
+    const contrasena = document.getElementById("password").value;
 
     try {
-        const res = await fetch("/api/auth/login", {
+        const respuesta = await fetch("http://localhost:4000/toProcess", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ usuario, contrasena })
+            credentials: "include", 
+            body: JSON.stringify({ clase: "Auth", metodo: "login", data: { usuario, contrasena } })
         });
 
-        const data = await res.json();
-
-        if (res.status === 200) {
-            window.location.replace("home.html");
+        const resultado = await respuesta.json();
+        if (resultado.success) {
+            window.location.href = "home.html"; // Redirección instantánea
         } else {
-            alert("Error de autenticación: " + (data.error || "Usuario/clave incorrectos"));
-            passwordInput.value = "";
+            alert("Error: " + resultado.error); // Solo alert en caso de error real
         }
-    } catch (err) {
-        alert("Error al conectar con el servidor.");
-        console.error(err);
+    } catch (error) {
+        console.error("Error:", error);
     }
+});
+
+// Ver clave
+document.getElementById('visible').addEventListener('change', function() {
+    document.getElementById('password').type = this.checked ? 'text' : 'password';
 });

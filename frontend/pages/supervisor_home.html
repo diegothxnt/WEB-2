@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> - Panel de Supervisión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin_style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="main-sidebar">
+            <div class="brand">
+                <img src="../img/logo.jpg" alt="Logo URU">
+                <span> SUPERVISOR</span>
+            </div>
+            <nav class="menu-groups">
+                <div class="group-title">OPERACIONES</div>
+                <div class="menu-item" onclick="render('prestamos')"><span>📦</span> Préstamos / Devolución</div>
+                <div class="menu-item" onclick="render('inventario')"><span>🛠️</span> Control Inventario</div>
+                
+                <div class="group-title">REPORTES Y CONTROL</div>
+                <div class="menu-item" onclick="render('morosos')"><span>⚠️</span> Estudiantes Morosos</div>
+                <div class="menu-item" onclick="render('solvencias')"><span>📄</span> Generar Solvencias</div>
+                <div class="menu-item" onclick="render('notificaciones')"><span>🔔</span> Enviar Alertas</div>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn-exit">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <main class="main-viewport">
+            <header class="top-bar">
+                <h2 id="view-title">Gestión de Laboratorio</h2>
+                <div class="user-info"><strong>Supervisor: Paul Rivas</strong><div class="status-dot"></div></div>
+            </header>
+            <section class="content-area">
+                <div id="dynamic-content">
+                    <div class="welcome-box">
+                        <h3>Panel de Control Operativo</h3>
+                        <p>Gestione el flujo de equipos y solvencias de los estudiantes.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="../js/supervisor.js"></script>
+</body>
+</html>
