@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro — Laboratorio de Electrónica</title>
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/auth.css">
+</head>
+
+<body>
+
+    <div class="auth-card" role="main">
+
+        <div class="auth-card__header">
+            <img src="../../assets/img/logo.jpg" alt="Logo URU" class="auth-card__logo">
+            <h1 class="auth-card__title">Registro de Usuario</h1>
+            <span class="auth-card__subtitle">Laboratorio de Electrónica</span>
+        </div>
+
+        <div class="auth-card__body">
+
+            <div class="form-error" id="registerError" role="alert" aria-live="polite">
+                <img src="/assets/icons/icon-alerta.svg" alt="" class="form-error__icon" aria-hidden="true">
+                <span id="registerErrorMsg"></span>
+            </div>
+
+            <form id="registerForm" novalidate>
+
+                <div class="form-group">
+                    <label for="nombre">Nombre completo</label>
+                    <div class="input-wrap">
+                        <img src="/assets/icons/icon-usuario.svg" alt="" class="input-icon" aria-hidden="true">
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" autocomplete="name"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cedula">Cédula</label>
+                    <div class="input-wrap">
+                        <img src="/assets/icons/icon-cedula.svg" alt="" class="input-icon" aria-hidden="true">
+                        <input type="text" id="cedula" name="cedula" placeholder="Número de cédula" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="correo">Correo electrónico</label>
+                    <div class="input-wrap">
+                        <img src="/assets/icons/icon-correo.svg" alt="" class="input-icon" aria-hidden="true">
+                        <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com"
+                            autocomplete="email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regUsername">Usuario</label>
+                    <div class="input-wrap">
+                        <img src="/assets/icons/icon-usuario.svg" alt="" class="input-icon" aria-hidden="true">
+                        <input type="text" id="regUsername" name="regUsername" placeholder="Nombre de usuario"
+                            autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Contraseña</label>
+                    <div class="input-wrap">
+                        <img src="/assets/icons/icon-candado.svg" alt="" class="input-icon" aria-hidden="true">
+                        <input type="password" id="regPassword" name="regPassword" placeholder="Contraseña"
+                            autocomplete="new-password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    Crear cuenta
+                </button>
+
+            </form>
+
+            <p class="auth-footer">
+                ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
+            </p>
+
+        </div>
+    </div>
+
+    <script src="../../js/auth/register.js"></script>
+</body>
+
+</html>

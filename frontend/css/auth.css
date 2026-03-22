@@ -1,0 +1,206 @@
+/* ─── auth.css ──────────────────────────────────────────────── */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--c-bg);
+    background-image: radial-gradient(var(--c-border) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+
+/* ─── Tarjeta ───────────────────────────────────────────────── */
+.auth-card {
+    width: 390px;
+    background: var(--c-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    animation: card-in 0.35s ease both;
+}
+
+@keyframes card-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-card__header {
+    background: var(--c-navy);
+    padding: 28px 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.auth-card__logo {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.10);
+    padding: 6px;
+}
+
+.auth-card__title {
+    font-family: var(--font-head);
+    font-size: 1.15rem;
+    color: #ffffff;
+    text-align: center;
+}
+
+.auth-card__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--c-sky);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.80;
+}
+
+.auth-card__body {
+    padding: 28px 32px 32px;
+}
+
+/* ─── Grupos de campo ───────────────────────────────────────── */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--c-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+}
+
+.input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrap .input-icon {
+    position: absolute;
+    left: 11px;
+    width: 17px;
+    height: 17px;
+    opacity: 0.40;
+    pointer-events: none;
+}
+
+.input-wrap input {
+    width: 100%;
+    padding: 11px 12px 11px 37px;
+    border: 1.5px solid var(--c-border);
+    border-radius: 7px;
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    color: var(--c-text);
+    background: var(--c-surface);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-wrap input:focus {
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 3px rgba(29, 111, 164, 0.11);
+}
+
+/* ─── Checkbox ver clave ─────────────────────────────────────── */
+.check-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    color: var(--c-muted);
+    cursor: pointer;
+    user-select: none;
+}
+
+.check-group input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--c-blue);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ─── Error inline ───────────────────────────────────────────── */
+.form-error {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border: 1px solid rgba(192, 57, 43, 0.22);
+    border-radius: 7px;
+    padding: 10px 12px;
+    font-size: 0.83rem;
+    margin-bottom: 14px;
+}
+
+.form-error.visible {
+    display: flex;
+}
+
+.form-error__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* ─── Botón primario ─────────────────────────────────────────── */
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: var(--c-navy);
+    color: #ffffff;
+    border: none;
+    border-radius: 7px;
+    font-family: var(--font-head);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 6px;
+}
+
+.btn-primary:hover {
+    background: var(--c-blue);
+}
+
+.btn-primary:active {
+    transform: scale(0.99);
+}
+
+/* ─── Pie de tarjeta ─────────────────────────────────────────── */
+.auth-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.83rem;
+    color: var(--c-muted);
+}
+
+.auth-footer a {
+    color: var(--c-blue);
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,327 @@
+/* ─── layout.css ────────────────────────────────────────────── */
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--c-bg);
+}
+
+/* ─── Header de la aplicación ───────────────────────────────── */
+.app-header {
+    background: var(--c-navy);
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.app-header__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.app-header__back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.70);
+    font-size: 0.82rem;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: background 0.2s, color 0.2s;
+}
+
+.app-header__back img {
+    width: 14px;
+    height: 14px;
+    filter: invert(1);
+    opacity: 0.70;
+}
+
+.app-header__back:hover {
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+}
+
+.app-header__divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.app-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.app-header__logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.10);
+    padding: 3px;
+}
+
+.app-header__title {
+    font-family: var(--font-head);
+    font-size: 0.90rem;
+    color: #ffffff;
+}
+
+.app-header__title small {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.60rem;
+    color: var(--c-sky);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 400;
+    opacity: 0.75;
+}
+
+.app-header__right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.app-header__username {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.83rem;
+}
+
+.app-header__username img {
+    width: 16px;
+    height: 16px;
+    filter: invert(1);
+    opacity: 0.55;
+}
+
+/* ─── Botón logout ───────────────────────────────────────────── */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.80);
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 0.80rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-logout img {
+    width: 13px;
+    height: 13px;
+    filter: invert(1);
+    opacity: 0.70;
+}
+
+.btn-logout:hover {
+    background: rgba(192, 57, 43, 0.55);
+    border-color: transparent;
+    color: #ffffff;
+}
+
+/* ─── Layout principal ───────────────────────────────────────── */
+.app-body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ─── Sidebar ────────────────────────────────────────────────── */
+.app-sidebar {
+    background: var(--c-surface);
+    border-right: 1.5px solid var(--c-border);
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+}
+
+.sidebar-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--c-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px 10px 10px;
+    border-bottom: 1px solid var(--c-border);
+    margin-bottom: 4px;
+}
+
+/* ─── Botones del sidebar ────────────────────────────────────── */
+.btn-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 13px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--c-text);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+}
+
+.btn-menu:hover {
+    background: var(--c-ice);
+    color: var(--c-blue);
+}
+
+.btn-menu.active {
+    background: var(--c-ice);
+    color: var(--c-blue);
+    font-weight: 600;
+}
+
+.btn-menu.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: var(--c-blue);
+}
+
+.btn-menu__icon {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+    opacity: 0.50;
+    transition: opacity 0.15s;
+}
+
+.btn-menu:hover .btn-menu__icon,
+.btn-menu.active .btn-menu__icon {
+    opacity: 0.90;
+}
+
+/* ─── Contenido principal ────────────────────────────────────── */
+.app-content {
+    background: var(--c-surface);
+    overflow-y: auto;
+    padding: 32px 36px;
+}
+
+/* Estado vacío */
+.content-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--c-muted);
+    text-align: center;
+}
+
+.content-placeholder img {
+    width: 52px;
+    height: 52px;
+    opacity: 0.25;
+    margin-bottom: 4px;
+}
+
+.content-placeholder h2 {
+    font-family: var(--font-head);
+    font-size: 1.05rem;
+    color: var(--c-navy);
+    opacity: 0.50;
+}
+
+.content-placeholder p {
+    font-size: 0.85rem;
+    max-width: 280px;
+    line-height: 1.6;
+}
+
+/* ─── Vistas de contenido ────────────────────────────────────── */
+.view-section {
+    animation: fade-in 0.2s ease both;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.view-section h2 {
+    font-family: var(--font-head);
+    font-size: 1.25rem;
+    color: var(--c-navy);
+    margin-bottom: 8px;
+}
+
+.view-divider {
+    border: none;
+    border-top: 1.5px solid var(--c-border);
+    margin-bottom: 20px;
+}
+
+.view-section p {
+    font-size: 0.875rem;
+    color: var(--c-muted);
+    line-height: 1.6;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 700px) {
+    .app-body {
+        grid-template-columns: 1fr;
+    }
+
+    .app-sidebar {
+        border-right: none;
+        border-bottom: 1.5px solid var(--c-border);
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        overflow-x: auto;
+        padding: 12px 10px;
+    }
+
+    .btn-menu {
+        flex-direction: column;
+        font-size: 0.72rem;
+        padding: 8px 10px;
+        text-align: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+}

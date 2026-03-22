@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes — Laboratorio de Electrónica</title>
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/layout.css">
+</head>
+
+<body>
+
+    <!-- ─── Header ─────────────────────────────────────────── -->
+    <header class="app-header">
+        <div class="app-header__left">
+            <a href="../dashboard.html" class="app-header__back" aria-label="Volver al inicio">
+                <img src="/assets/icons/icon-atras.svg" alt="" aria-hidden="true">
+                Inicio
+            </a>
+            <div class="app-header__divider" aria-hidden="true"></div>
+            <a href="../dashboard.html" class="app-header__brand">
+                <img src="../../assets/img/logo.jpg" alt="Logo URU" class="app-header__logo">
+                <div class="app-header__title">
+                    Reportes
+                    <small>Laboratorio de Electrónica</small>
+                </div>
+            </a>
+        </div>
+
+        <div class="app-header__right">
+            <span class="app-header__username" aria-live="polite">
+                <img src="/assets/icons/icon-usuario.svg" alt="" aria-hidden="true">
+                <span id="usernameText">—</span>
+            </span>
+            <button class="btn-logout" id="logoutBtn" type="button">
+                <img src="/assets/icons/icon-logout.svg" alt="" aria-hidden="true">
+                Salir
+            </button>
+        </div>
+    </header>
+
+    <!-- ─── Body ──────────────────────────────────────────── -->
+    <div class="app-body">
+
+        <aside class="app-sidebar" aria-label="Tipos de reporte">
+            <p class="sidebar-label">Reportes</p>
+            <div id="sidebar-reportes"></div>
+        </aside>
+
+        <main class="app-content" id="main-content">
+            <div class="content-placeholder">
+                <img src="/assets/icons/icon-reportes.svg" alt="" aria-hidden="true">
+                <h2>Módulo de Reportes</h2>
+                <p>Selecciona el tipo de reporte que deseas generar.</p>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="../../js/reportes/reportes.js" type="module"></script>
+</body>
+
+</html>

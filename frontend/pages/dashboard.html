@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio — Laboratorio de Electrónica</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+    <!-- ─── Header ─────────────────────────────────────────── -->
+    <header class="dash-header">
+        <a href="#" class="dash-header__brand" aria-label="Inicio">
+            <img src="../assets/img/logo.jpg" alt="Logo URU" class="dash-header__logo">
+            <div class="dash-header__name">
+                Laboratorio de Electrónica
+                <small>Sistema de Préstamos</small>
+            </div>
+        </a>
+
+        <div class="dash-header__user">
+            <span class="dash-header__username" aria-live="polite">
+                <img src="/assets/icons/icon-usuario.svg" alt="" aria-hidden="true">
+                <span id="usernameText">Cargando...</span>
+            </span>
+            <button class="btn-logout" id="logoutBtn" type="button">
+                <img src="/assets/icons/icon-logout.svg" alt="" aria-hidden="true">
+                Cerrar sesión
+            </button>
+        </div>
+    </header>
+
+    <!-- ─── Main ──────────────────────────────────────────── -->
+    <main class="dash-main">
+
+        <div class="dash-welcome">
+            <p class="dash-welcome__greeting">Panel de control</p>
+            <h2 class="dash-welcome__title">¿Qué deseas gestionar hoy?</h2>
+            <p class="dash-welcome__sub">Selecciona un módulo para comenzar.</p>
+        </div>
+
+        <p class="dash-section-label">Módulos del sistema</p>
+
+        <div class="modules-grid">
+
+            <a href="gestion/gestion.html#prestamos" class="module-card">
+                <div class="module-card__icon-wrap">
+                    <img src="/assets/icons/icon-prestamos.svg" alt="" class="module-card__icon" aria-hidden="true">
+                </div>
+                <h3 class="module-card__title">Préstamos</h3>
+                <p class="module-card__desc">Registrar el préstamo de equipos y componentes del laboratorio.</p>
+                <span class="module-card__arrow">Ir al módulo →</span>
+            </a>
+
+            <a href="gestion/gestion.html#devoluciones" class="module-card">
+                <div class="module-card__icon-wrap">
+                    <img src="/assets/icons/icon-devoluciones.svg" alt="" class="module-card__icon" aria-hidden="true">
+                </div>
+                <h3 class="module-card__title">Devoluciones</h3>
+                <p class="module-card__desc">Registrar la devolución de equipos prestados y verificar su estado.</p>
+                <span class="module-card__arrow">Ir al módulo →</span>
+            </a>
+
+            <a href="gestion/gestion.html#inventario" class="module-card">
+                <div class="module-card__icon-wrap">
+                    <img src="/assets/icons/icon-inventario.svg" alt="" class="module-card__icon" aria-hidden="true">
+                </div>
+                <h3 class="module-card__title">Inventario</h3>
+                <p class="module-card__desc">Consultar el stock disponible de equipos y componentes.</p>
+                <span class="module-card__arrow">Ir al módulo →</span>
+            </a>
+
+            <a href="gestion/gestion.html#estado" class="module-card">
+                <div class="module-card__icon-wrap">
+                    <img src="/assets/icons/icon-estado-equipos.svg" alt="" class="module-card__icon"
+                        aria-hidden="true">
+                </div>
+                <h3 class="module-card__title">Estado de Equipos</h3>
+                <p class="module-card__desc">Verificar la condición actual de equipos y componentes.</p>
+                <span class="module-card__arrow">Ir al módulo →</span>
+            </a>
+
+            <a href="reportes/reportes.html" class="module-card">
+                <div class="module-card__icon-wrap">
+                    <img src="/assets/icons/icon-reportes.svg" alt="" class="module-card__icon" aria-hidden="true">
+                </div>
+                <h3 class="module-card__title">Reportes</h3>
+                <p class="module-card__desc">Generar informes de solvencia, listado de morosos y estadísticas.</p>
+                <span class="module-card__arrow">Ir al módulo →</span>
+            </a>
+
+            <a href="gestion/gestion.html#notificaciones" class="module-card">
+                <div class="module-card__icon-wrap">
+                    <img src="/assets/icons/icon-notificaciones.svg" alt="" class="module-card__icon"
+                        aria-hidden="true">
+                </div>
+                <h3 class="module-card__title">Notificaciones</h3>
+                <p class="module-card__desc">Revisar alertas de vencimientos y préstamos pendientes.</p>
+                <span class="module-card__arrow">Ir al módulo →</span>
+            </a>
+
+        </div>
+
+    </main>
+
+    <script src="../js/dashboard.js"></script>
+</body>
+
+</html>
