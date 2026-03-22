@@ -3,40 +3,36 @@
  */
 
 import { Router } from "express";
-import {
-  loginController,
-  logoutController,
-  registerController
-} from "../controllers/authController.js";
-import Dispatcher  from "../dispatcher.js";
+import { loginController, logoutController, registerController } from "../controllers/authController.js";
+import dispatcher from "../dispatcher.js";
 
 const router = Router();
 
 router.post(
-  "/login",
-  new Dispatcher({
-    action: "login",
-    requiresAuth: false,
-    handler: loginController
-  }).middleware()
+    "/login",
+    dispatcher.dispatch({
+        action: "login",
+        requiresAuth: false,
+        handler: loginController
+    })
 );
 
 router.post(
-  "/logout",
-  new Dispatcher({
-    action: "logout",
-    requiresAuth: true,
-    handler: logoutController
-  }).middleware()
+    "/logout",
+    dispatcher.dispatch({
+        action: "logout",
+        requiresAuth: true,
+        handler: logoutController
+    })
 );
 
 router.post(
-  "/register",
-  new Dispatcher({
-    action: "register",
-    requiresAuth: false,
-    handler: registerController
-  }).middleware()
+    "/register",
+    dispatcher.dispatch({
+        action: "register",
+        requiresAuth: false,
+        handler: registerController
+    })
 );
 
 export default router;

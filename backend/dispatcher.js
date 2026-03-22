@@ -1,58 +1,61 @@
 /**
- * @file Dispatcher para manejar sesiones y seguridad
- */
-
-/**
- * Ejecuta una accion controlando errores y asegurando autenticacion
- * 
- * @param {Object} options
- * @param {string} options.action - Nombre de la accion
- * @param {boolean} options.requiresAuth - Si la accion requiere autenticacion
- * @param {Function} options.handler - Funcion que maneja la accion
- * @return {Function} Middleware de Express
+ * @file Dispatcher — singleton del servidor para despachar acciones con control de autenticación
+ *
+ * Se instancia una vez cuando el módulo es importado (al levantar el servidor).
+ * Las rutas usan dispatcher.dispatch(...) en lugar de instanciar Dispatcher por ruta.
  */
 
 export class Dispatcher {
-    constructor({ action, requiresAuth = false, handler }) {
-        this.action = action;
-        this.requiresAuth = requiresAuth;
-        this.handler = handler;
-    }
+    #registeredActions = new Map();
 
-    async handle(req, res, next) {
-        try {
-            // Validar sesion
-            if (this.requiresAuth && !req.session?.user) {
-                return res.status(401).json({
+    /**
+     * Registra la accion y retorna el middleware de Express correspondiente.
+     *
+     * @param {Object}   options
+     * @param {string}   options.action       - Nombre identificador de la accion
+     * @param {boolean}  options.requiresAuth - Si la accion requiere sesion activa
+     * @param {Function} options.handler      - Controller (req, res, next) => ...
+     * @returns {Function} Middleware de Express
+     */
+    dispatch({ action, requiresAuth = false, handler }) {
+        this.#registeredActions.set(action, { requiresAuth, handler });
+
+        return async (req, res, next) => {
+            try {
+                if (requiresAuth && !req.session?.user) {
+                    return res.status(401).json({
+                        success: false,
+                        message: "No autorizado"
+                    });
+                }
+
+                const result = await handler(req, res, next);
+
+                if (req.session) {
+                    await new Promise((resolve, reject) => {
+                        req.session.save(err => (err ? reject(err) : resolve()));
+                    }).catch(err => {
+                        console.error(`[Dispatcher] Error guardando sesion para accion "${action}":`, err);
+                    });
+                }
+
+                return result;
+            } catch (error) {
+                console.error(`[Dispatcher] Error en accion "${action}":`, error);
+                return res.status(500).json({
                     success: false,
-                    message: "No autorizado"
+                    message: "Error interno del servidor"
                 });
             }
-            
-            // Ejecutar handler
-            const result = await this.handler(req, res, next);
-
-            if (req.session) {
-                await new Promise((resolve, reject) => {
-                    req.session.save(err => err ? reject(err) : resolve());
-                }).catch(err => {
-                console.error("[Dispatcher] error saving session:", err);
-                });
-            }
-
-            return result;
-        } catch (error) {
-            console.error(`[Dispatcher] Error en accion ${this.action}:`, error);
-            return res.status(500).json({
-                success: false,
-                message: "Error interno del servidor"
-            });
-        }
+        };
     }
 
-    middleware() {
-        return this.handle.bind(this);
+    // Retorna la lista de acciones registradas (útil para depuración)
+    getRegisteredActions() {
+        return [...this.#registeredActions.keys()];
     }
 }
 
-export default Dispatcher;
+// Singleton
+const dispatcher = new Dispatcher();
+export default dispatcher;
