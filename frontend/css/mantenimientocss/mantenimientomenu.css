@@ -1,0 +1,61 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-areas: 
+        "header header"
+        "sidebar main";
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 70px 1fr;
+    height: 100vh;
+}
+
+.header {
+    grid-area: header;
+    border: 2px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    border-left: 2px solid #000;
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.main-content {
+    grid-area: main;
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
+    padding: 30px;
+}
+
+/* Estilo de los botones basado en tu wireframe */
+.btn-menu {
+    background-color: #add8e6; /* Azul claro */
+    border: 2px solid #000;
+    border-radius: 20px;
+    padding: 15px 10px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: center;
+    text-transform: uppercase;
+    transition: background 0.3s;
+}
+
+.btn-menu:hover {
+    background-color: #90c6d4;
+}
