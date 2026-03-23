@@ -1,0 +1,24 @@
+{
+  "_comment": "Permisos de perfil a opciones de menú/pantalla.",
+  "options": [
+    { "subsystem": "gestion",  "option": "prestamos",     "profile": "admin"   },
+    { "subsystem": "gestion",  "option": "devoluciones",  "profile": "admin"   },
+    { "subsystem": "gestion",  "option": "inventario",    "profile": "admin"   },
+    { "subsystem": "gestion",  "option": "estado",        "profile": "admin"   },
+    { "subsystem": "gestion",  "option": "ubicacion",     "profile": "admin"   },
+    { "subsystem": "gestion",  "option": "notificaciones","profile": "admin"   },
+    { "subsystem": "reportes", "option": "solvencia",     "profile": "admin"   },
+    { "subsystem": "reportes", "option": "morosos",       "profile": "admin"   },
+    { "subsystem": "reportes", "option": "estadisticas",  "profile": "admin"   },
+
+    { "subsystem": "gestion",  "option": "prestamos",     "profile": "default" },
+    { "subsystem": "gestion",  "option": "devoluciones",  "profile": "default" },
+    { "subsystem": "gestion",  "option": "inventario",    "profile": "default" },
+    { "subsystem": "gestion",  "option": "estado",        "profile": "default" },
+    { "subsystem": "gestion",  "option": "ubicacion",     "profile": "default" },
+    { "subsystem": "gestion",  "option": "notificaciones","profile": "default" },
+    { "subsystem": "reportes", "option": "solvencia",     "profile": "default" },
+    { "subsystem": "reportes", "option": "morosos",       "profile": "default" },
+    { "subsystem": "reportes", "option": "estadisticas",  "profile": "default" }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "_comment": "Mapa de transacciones. Relaciona un id (atx) con subsistema, clase de negocio y método a ejecutar.",
+  "transactions": [
+    { "id": 10, "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "listar"       },
+    { "id": 11, "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "crear"        },
+    { "id": 12, "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "anular"       },
+    { "id": 20, "subsystem": "gestion",  "className": "DevolucionClass",  "methodName": "registrar"    },
+    { "id": 30, "subsystem": "gestion",  "className": "InventarioClass",  "methodName": "listar"       },
+    { "id": 40, "subsystem": "gestion",  "className": "EquipoClass",      "methodName": "listarEstado" },
+    { "id": 50, "subsystem": "gestion",  "className": "UbicacionClass",   "methodName": "listar"       },
+    { "id": 60, "subsystem": "gestion",  "className": "NotificacionClass","methodName": "listar"       },
+    { "id": 70, "subsystem": "reportes", "className": "ReporteClass",     "methodName": "solvencia"    },
+    { "id": 71, "subsystem": "reportes", "className": "ReporteClass",     "methodName": "morosos"      },
+    { "id": 72, "subsystem": "reportes", "className": "ReporteClass",     "methodName": "estadisticas" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "_comment": "Permisos por perfil. La clave resultante es: subsystem-className-methodName-profile",
+  "permissions": [
+    { "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "listar",       "profile": "admin"   },
+    { "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "crear",        "profile": "admin"   },
+    { "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "anular",       "profile": "admin"   },
+    { "subsystem": "gestion",  "className": "DevolucionClass",  "methodName": "registrar",    "profile": "admin"   },
+    { "subsystem": "gestion",  "className": "InventarioClass",  "methodName": "listar",       "profile": "admin"   },
+    { "subsystem": "gestion",  "className": "EquipoClass",      "methodName": "listarEstado", "profile": "admin"   },
+    { "subsystem": "gestion",  "className": "UbicacionClass",   "methodName": "listar",       "profile": "admin"   },
+    { "subsystem": "gestion",  "className": "NotificacionClass","methodName": "listar",       "profile": "admin"   },
+    { "subsystem": "reportes", "className": "ReporteClass",     "methodName": "solvencia",    "profile": "admin"   },
+    { "subsystem": "reportes", "className": "ReporteClass",     "methodName": "morosos",      "profile": "admin"   },
+    { "subsystem": "reportes", "className": "ReporteClass",     "methodName": "estadisticas", "profile": "admin"   },
+
+    { "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "listar",       "profile": "default" },
+    { "subsystem": "gestion",  "className": "DevolucionClass",  "methodName": "registrar",    "profile": "default" },
+    { "subsystem": "gestion",  "className": "InventarioClass",  "methodName": "listar",       "profile": "default" },
+    { "subsystem": "gestion",  "className": "EquipoClass",      "methodName": "listarEstado", "profile": "default" },
+    { "subsystem": "gestion",  "className": "UbicacionClass",   "methodName": "listar",       "profile": "default" },
+    { "subsystem": "gestion",  "className": "NotificacionClass","methodName": "listar",       "profile": "default" },
+    { "subsystem": "reportes", "className": "ReporteClass",     "methodName": "solvencia",    "profile": "default" },
+    { "subsystem": "reportes", "className": "ReporteClass",     "methodName": "morosos",      "profile": "default" },
+    { "subsystem": "reportes", "className": "ReporteClass",     "methodName": "estadisticas", "profile": "default" }
+  ]
+}
