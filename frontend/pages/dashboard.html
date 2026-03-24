@@ -36,77 +36,26 @@
     <!-- ─── Main ──────────────────────────────────────────── -->
     <main class="dash-main">
 
+        <!-- Banner de acceso denegado — visible solo si ?error=forbidden -->
+        <div class="dash-alert dash-alert--error" id="alertBanner" hidden role="alert">
+            <img src="/assets/icons/icon-alerta.svg" alt="" aria-hidden="true" width="18">
+            <span id="alertMsg">No tienes permiso para acceder a esa sección.</span>
+        </div>
+
         <div class="dash-welcome">
             <p class="dash-welcome__greeting">Panel de control</p>
             <h2 class="dash-welcome__title">¿Qué deseas gestionar hoy?</h2>
             <p class="dash-welcome__sub">Selecciona un módulo para comenzar.</p>
         </div>
 
-        <p class="dash-section-label">Módulos del sistema</p>
+        <p class="dash-section-label" id="sectionLabel">Módulos del sistema</p>
 
-        <div class="modules-grid">
-
-            <a href="gestion/gestion.html#prestamos" class="module-card">
-                <div class="module-card__icon-wrap">
-                    <img src="/assets/icons/icon-prestamos.svg" alt="" class="module-card__icon" aria-hidden="true">
-                </div>
-                <h3 class="module-card__title">Préstamos</h3>
-                <p class="module-card__desc">Registrar el préstamo de equipos y componentes del laboratorio.</p>
-                <span class="module-card__arrow">Ir al módulo →</span>
-            </a>
-
-            <a href="gestion/gestion.html#devoluciones" class="module-card">
-                <div class="module-card__icon-wrap">
-                    <img src="/assets/icons/icon-devoluciones.svg" alt="" class="module-card__icon" aria-hidden="true">
-                </div>
-                <h3 class="module-card__title">Devoluciones</h3>
-                <p class="module-card__desc">Registrar la devolución de equipos prestados y verificar su estado.</p>
-                <span class="module-card__arrow">Ir al módulo →</span>
-            </a>
-
-            <a href="gestion/gestion.html#inventario" class="module-card">
-                <div class="module-card__icon-wrap">
-                    <img src="/assets/icons/icon-inventario.svg" alt="" class="module-card__icon" aria-hidden="true">
-                </div>
-                <h3 class="module-card__title">Inventario</h3>
-                <p class="module-card__desc">Consultar el stock disponible de equipos y componentes.</p>
-                <span class="module-card__arrow">Ir al módulo →</span>
-            </a>
-
-            <a href="gestion/gestion.html#estado" class="module-card">
-                <div class="module-card__icon-wrap">
-                    <img src="/assets/icons/icon-estado-equipos.svg" alt="" class="module-card__icon"
-                        aria-hidden="true">
-                </div>
-                <h3 class="module-card__title">Estado de Equipos</h3>
-                <p class="module-card__desc">Verificar la condición actual de equipos y componentes.</p>
-                <span class="module-card__arrow">Ir al módulo →</span>
-            </a>
-
-            <a href="reportes/reportes.html" class="module-card">
-                <div class="module-card__icon-wrap">
-                    <img src="/assets/icons/icon-reportes.svg" alt="" class="module-card__icon" aria-hidden="true">
-                </div>
-                <h3 class="module-card__title">Reportes</h3>
-                <p class="module-card__desc">Generar informes de solvencia, listado de morosos y estadísticas.</p>
-                <span class="module-card__arrow">Ir al módulo →</span>
-            </a>
-
-            <a href="gestion/gestion.html#notificaciones" class="module-card">
-                <div class="module-card__icon-wrap">
-                    <img src="/assets/icons/icon-notificaciones.svg" alt="" class="module-card__icon"
-                        aria-hidden="true">
-                </div>
-                <h3 class="module-card__title">Notificaciones</h3>
-                <p class="module-card__desc">Revisar alertas de vencimientos y préstamos pendientes.</p>
-                <span class="module-card__arrow">Ir al módulo →</span>
-            </a>
-
-        </div>
+        <!-- Tarjetas generadas dinámicamente por dashboard.js según el perfil -->
+        <div class="modules-grid" id="modulesGrid" aria-live="polite"></div>
 
     </main>
 
-    <script src="../js/dashboard.js"></script>
+    <script type="module" src="../js/dashboard.js"></script>
 </body>
 
 </html>

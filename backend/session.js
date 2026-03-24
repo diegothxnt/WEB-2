@@ -1,34 +1,37 @@
-import session from "express-session";
-import connectPg from "connect-pg-simple";
-import dotenv from "dotenv";
-import fs from "fs";
-import db from "./db/db.js";
+import session    from "express-session";
+import connectPg  from "connect-pg-simple";
+import dotenv     from "dotenv";
+import fs         from "fs";
+import db         from "./db/db.js";
 import resolveValue from "./utils/resolveValue.js";
 dotenv.config();
 
-// ========================================================================
-// UserSession — objeto de sesión asociado a un usuario activo
-// Se crea al iniciar sesión y se almacena serializado en req.session.user
-// ========================================================================
+// ====================================================================
+// UserSession — objeto de sesión asociado a un usuario activo.
+// Se crea al iniciar sesión y se serializa en req.session.user.
+// Ahora incluye el campo `profile` leído desde la tabla usuario_perfil.
+// ====================================================================
 
 export class UserSession {
     /**
      * @param {Object} data
-     * @param {number} data.id       - ID del usuario en la BD
-     * @param {string} data.usuario  - Nombre de usuario
-     * @param {string} [data.createdAt] - ISO timestamp de creación
+     * @param {number} data.id
+     * @param {string} data.usuario
+     * @param {string} [data.profile]
+     * @param {string} [data.createdAt]
      */
-    constructor({ id, usuario, createdAt = null }) {
-        this.id = id;
-        this.usuario = usuario;
+    constructor({ id, usuario, profile = "estudiante", createdAt = null }) {
+        this.id        = id;
+        this.usuario   = usuario;
+        this.profile   = profile;
         this.createdAt = createdAt ?? new Date().toISOString();
     }
 
-    /** Serializa para almacenar en req.session.user */
     toJSON() {
         return {
-            id: this.id,
-            usuario: this.usuario,
+            id:        this.id,
+            usuario:   this.usuario,
+            profile:   this.profile,
             createdAt: this.createdAt
         };
     }
@@ -44,28 +47,28 @@ export class UserSession {
     }
 }
 
-// =======================================
+// ====================================================================
 // Configuración del middleware de sesión
-// =======================================
+// ====================================================================
 
 const rawConfig = JSON.parse(
     fs.readFileSync(new URL("./config/sessionConfig.json", import.meta.url), "utf-8")
 );
 
-const config = resolveValue(rawConfig);
+const config    = resolveValue(rawConfig);
 const PgSession = connectPg(session);
 
 const sessionStore = {
     store: new PgSession({
-        pool: db.pool,
+        pool:      db.pool,
         tableName: config.store.tableName
     }),
-    secret: config.secret,
-    resave: config.resave,
+    secret:           config.secret,
+    resave:           config.resave,
     saveUninitialized: config.saveUninitialized,
     cookie: {
-        maxAge: Number(config.cookie.maxAge),
-        secure: config.cookie.secure,
+        maxAge:   Number(config.cookie.maxAge),
+        secure:   config.cookie.secure,
         httpOnly: config.cookie.httpOnly,
         sameSite: config.cookie.sameSite
     }
@@ -73,9 +76,9 @@ const sessionStore = {
 
 const sessionMiddleware = session(sessionStore);
 
-// =================
-// SessionComponent 
-// =================
+// ====================================================================
+// SessionComponent
+// ====================================================================
 
 class SessionComponent {
     constructor(app) {
@@ -90,8 +93,8 @@ class SessionComponent {
      * @returns {UserSession}
      */
     createSession(req, data) {
-        const userSession = new UserSession(data);
-        req.session.user = userSession.toJSON();
+        const userSession   = new UserSession(data);
+        req.session.user    = userSession.toJSON();
         return userSession;
     }
 
@@ -100,32 +103,20 @@ class SessionComponent {
         return !!req.session.user;
     }
 
-    // Destruye la sesión
     destroySession(req, res) {
         req.session.destroy(err => {
             if (err) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Error al cerrar sesión"
-                });
+                return res.status(500).json({ success: false, message: "Error al cerrar sesión" });
             }
-
             res.clearCookie("connect.sid");
-            res.json({
-                success: true,
-                message: "Sesión cerrada"
-            });
+            res.json({ success: true, message: "Sesión cerrada" });
         });
     }
 
     // Agrega o actualiza datos en la sesión
     setDataSession(req, data) {
         if (!this.sessionExist(req)) return false;
-
-        req.session.user = {
-            ...req.session.user,
-            ...data
-        };
+        req.session.user = { ...req.session.user, ...data };
         return true;
     }
 
@@ -138,10 +129,7 @@ class SessionComponent {
     authenticate() {
         return (req, res, next) => {
             if (!this.sessionExist(req)) {
-                return res.status(401).json({
-                    success: false,
-                    message: "No autorizado"
-                });
+                return res.status(401).json({ success: false, message: "No autorizado" });
             }
             next();
         };

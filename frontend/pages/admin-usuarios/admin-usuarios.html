@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios — Laboratorio de Electrónica</title>
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/layout.css">
+</head>
+
+<body>
+
+    <!-- ─── Header ─────────────────────────────────────────── -->
+    <header class="app-header">
+        <div class="app-header__left">
+            <a href="../dashboard.html" class="app-header__back" aria-label="Volver al inicio">
+                <img src="/assets/icons/icon-atras.svg" alt="" aria-hidden="true">
+                Inicio
+            </a>
+            <div class="app-header__divider" aria-hidden="true"></div>
+            <a href="../dashboard.html" class="app-header__brand">
+                <img src="../../assets/img/logo.jpg" alt="Logo URU" class="app-header__logo">
+                <div class="app-header__title">
+                    Gestión de Usuarios
+                    <small>Laboratorio de Electrónica</small>
+                </div>
+            </a>
+        </div>
+
+        <div class="app-header__right">
+            <span class="app-header__username" aria-live="polite">
+                <img src="/assets/icons/icon-usuario.svg" alt="" aria-hidden="true">
+                <span id="usernameText">—</span>
+            </span>
+            <button class="btn-logout" id="logoutBtn" type="button">
+                <img src="/assets/icons/icon-logout.svg" alt="" aria-hidden="true">
+                Salir
+            </button>
+        </div>
+    </header>
+
+    <!-- ─── Body ──────────────────────────────────────────── -->
+    <div class="app-body">
+
+        <aside class="app-sidebar" aria-label="Opciones de administración">
+            <p class="sidebar-label">Administración</p>
+            <div id="sidebar-admin-usuarios"></div>
+        </aside>
+
+        <main class="app-content" id="main-content">
+            <div class="content-placeholder">
+                <img src="/assets/icons/icon-usuario.svg" alt="" aria-hidden="true">
+                <h2>Gestión de Usuarios</h2>
+                <p>Selecciona una opción para gestionar perfiles y permisos.</p>
+            </div>
+        </main>
+
+    </div>
+
+    <script type="module" src="../../js/admin-usuarios/admin-usuarios.js"></script>
+</body>
+
+</html>

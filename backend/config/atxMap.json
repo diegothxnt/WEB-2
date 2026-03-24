@@ -1,16 +1,57 @@
 {
-  "_comment": "Mapa de transacciones. Relaciona un id (atx) con subsistema, clase de negocio y método a ejecutar.",
+  "_comment": "Mapa de transacciones. Relaciona un id (atx) con subsistema, clase de negocio y método.",
+
   "transactions": [
-    { "id": 10, "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "listar"       },
-    { "id": 11, "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "crear"        },
-    { "id": 12, "subsystem": "gestion",  "className": "PrestamoClass",    "methodName": "anular"       },
-    { "id": 20, "subsystem": "gestion",  "className": "DevolucionClass",  "methodName": "registrar"    },
-    { "id": 30, "subsystem": "gestion",  "className": "InventarioClass",  "methodName": "listar"       },
-    { "id": 40, "subsystem": "gestion",  "className": "EquipoClass",      "methodName": "listarEstado" },
-    { "id": 50, "subsystem": "gestion",  "className": "UbicacionClass",   "methodName": "listar"       },
-    { "id": 60, "subsystem": "gestion",  "className": "NotificacionClass","methodName": "listar"       },
-    { "id": 70, "subsystem": "reportes", "className": "ReporteClass",     "methodName": "solvencia"    },
-    { "id": 71, "subsystem": "reportes", "className": "ReporteClass",     "methodName": "morosos"      },
-    { "id": 72, "subsystem": "reportes", "className": "ReporteClass",     "methodName": "estadisticas" }
+
+    { "_section": "── Gestión: admin + head_admin ───────────────────────────────" },
+
+    { "id": 10, "subsystem": "gestion",       "className": "PrestamoClass",         "methodName": "listar"              },
+    { "id": 11, "subsystem": "gestion",       "className": "PrestamoClass",         "methodName": "crear"               },
+    { "id": 12, "subsystem": "gestion",       "className": "PrestamoClass",         "methodName": "anular"              },
+    { "id": 13, "subsystem": "gestion",       "className": "PrestamoClass",         "methodName": "modificarFecha"      },
+
+    { "id": 20, "subsystem": "gestion",       "className": "DevolucionClass",       "methodName": "registrar"           },
+    { "id": 21, "subsystem": "gestion",       "className": "DevolucionClass",       "methodName": "listar"              },
+
+    { "id": 30, "subsystem": "gestion",       "className": "InventarioClass",       "methodName": "listar"              },
+    { "id": 31, "subsystem": "gestion",       "className": "InventarioClass",       "methodName": "actualizar"          },
+
+    { "id": 40, "subsystem": "gestion",       "className": "EquipoClass",           "methodName": "listarEstado"        },
+    { "id": 41, "subsystem": "gestion",       "className": "EquipoClass",           "methodName": "actualizarEstado"    },
+
+    { "id": 50, "subsystem": "gestion",       "className": "UbicacionClass",        "methodName": "listar"              },
+    { "id": 51, "subsystem": "gestion",       "className": "UbicacionClass",        "methodName": "actualizar"          },
+
+    { "id": 60, "subsystem": "gestion",       "className": "NotificacionClass",     "methodName": "listar"              },
+    { "id": 61, "subsystem": "gestion",       "className": "NotificacionClass",     "methodName": "enviar"              },
+
+    { "id": 65, "subsystem": "gestion",       "className": "AmonestacionClass",     "methodName": "asignar"             },
+    { "id": 66, "subsystem": "gestion",       "className": "AmonestacionClass",     "methodName": "listar"              },
+    { "id": 67, "subsystem": "gestion",       "className": "AmonestacionClass",     "methodName": "verificarPago"       },
+
+    { "_section": "── Reportes: admin + head_admin ──────────────────────────────" },
+
+    { "id": 70, "subsystem": "reportes",      "className": "ReporteClass",          "methodName": "solvencia"           },
+    { "id": 71, "subsystem": "reportes",      "className": "ReporteClass",          "methodName": "morosos"             },
+    { "id": 72, "subsystem": "reportes",      "className": "ReporteClass",          "methodName": "estadisticas"        },
+
+    { "_section": "── Estudiante ────────────────────────────────────────────────" },
+
+    { "id": 100, "subsystem": "estudiante",   "className": "EstudiantePrestamoClass",  "methodName": "verDisponibles"    },
+    { "id": 101, "subsystem": "estudiante",   "className": "EstudiantePrestamoClass",  "methodName": "solicitar"         },
+    { "id": 102, "subsystem": "estudiante",   "className": "EstudiantePrestamoClass",  "methodName": "verMisPrestamos"   },
+    { "id": 103, "subsystem": "estudiante",   "className": "EstudianteDevolucionClass","methodName": "verMisDevoluciones"},
+    { "id": 104, "subsystem": "estudiante",   "className": "EstudianteSolvenciaClass", "methodName": "verSolvencia"      },
+    { "id": 105, "subsystem": "estudiante",   "className": "EstudianteSolvenciaClass", "methodName": "pagarAmonestacion" },
+
+    { "_section": "── Head Admin: gestión de usuarios ────────────────────────────" },
+
+    { "id": 200, "subsystem": "admin-usuarios", "className": "GestionUsuariosClass", "methodName": "listar"                  },
+    { "id": 201, "subsystem": "admin-usuarios", "className": "GestionUsuariosClass", "methodName": "asignarPerfil"           },
+    { "id": 202, "subsystem": "admin-usuarios", "className": "GestionUsuariosClass", "methodName": "crearAdmin"              },
+    { "id": 203, "subsystem": "admin-usuarios", "className": "GestionUsuariosClass", "methodName": "listarPerfiles"          },
+    { "id": 204, "subsystem": "admin-usuarios", "className": "GestionUsuariosClass", "methodName": "asignarPermisoOverride"  },
+    { "id": 205, "subsystem": "admin-usuarios", "className": "GestionUsuariosClass", "methodName": "removerPermisoOverride"  }
+
   ]
 }

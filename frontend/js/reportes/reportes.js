@@ -1,13 +1,17 @@
 /**
  * @file js/reportes/reportes.js
- * Panel de reportes del laboratorio.
+ * Panel de reportes.
+ *
+ * Acceso: admin, head_admin
+ * Si un estudiante navega directamente a esta URL, es redirigido
+ * al dashboard con error=forbidden.
  */
 
 import { toProcess, ApiError } from "/js/shared/api.js";
+import { guardPage }           from "/js/shared/auth.js";
 
-const LOGIN_URL   = "/pages/auth/login.html";
-const SESSION_URL = "/api/users/me";
-const LOGOUT_URL  = "/api/auth/logout";
+const LOGIN_URL  = "/pages/auth/login.html";
+const LOGOUT_URL = "/api/auth/logout";
 
 // ─── Opciones de reporte ──────────────────────────────────────────
 const REPORTES = [
@@ -19,10 +23,7 @@ const REPORTES = [
 // ─── Clase OpcionReporte ──────────────────────────────────────────
 class OpcionReporte {
     constructor({ id, label, icon, atx }) {
-        this.id    = id;
-        this.label = label;
-        this.icon  = icon;
-        this.atx   = atx;
+        Object.assign(this, { id, label, icon, atx });
     }
 
     render(onClick) {
@@ -31,12 +32,9 @@ class OpcionReporte {
         btn.dataset.id = this.id;
         btn.type       = "button";
         btn.setAttribute("aria-label", this.label);
-
-        btn.innerHTML = `
+        btn.innerHTML  = `
             <img src="${this.icon}" alt="" class="btn-menu__icon" aria-hidden="true">
-            ${this.label}
-        `;
-
+            ${this.label}`;
         btn.addEventListener("click", () => onClick(this.id));
         return btn;
     }
@@ -69,7 +67,6 @@ class ReportesApp {
         this.#sidebar.querySelectorAll(".btn-menu").forEach(btn => {
             btn.classList.toggle("active", btn.dataset.id === id);
         });
-
         history.replaceState(null, "", `#${id}`);
 
         const reporte = REPORTES.find(r => r.id === id);
@@ -80,23 +77,18 @@ class ReportesApp {
         try {
             const response = await toProcess(reporte.atx);
             if (response === null) return;
-
             this.#renderVista(reporte, response.data);
         } catch (err) {
             this.#renderError(reporte.label, err);
         }
     }
-
     // ── Vistas ──────────────────────────────────────────────────
-
     #renderCargando(label) {
         this.#content.innerHTML = `
             <section class="view-section">
-                <h2>${label}</h2>
-                <hr class="view-divider">
+                <h2>${label}</h2><hr class="view-divider">
                 <p class="view-loading">Cargando...</p>
-            </section>
-        `;
+            </section>`;
     }
 
     #renderVista(reporte, data) {
@@ -107,27 +99,21 @@ class ReportesApp {
         this.#content.innerHTML = `
             <section class="view-section" aria-labelledby="view-title-${reporte.id}">
                 <h2 id="view-title-${reporte.id}">${reporte.label}</h2>
-                <hr class="view-divider">
-                ${preview}
-            </section>
-        `;
+                <hr class="view-divider">${preview}
+            </section>`;
     }
 
     #renderError(label, err) {
         const esNoImplementado = err instanceof ApiError && err.status === 501;
-
         this.#content.innerHTML = `
             <section class="view-section">
-                <h2>${label}</h2>
-                <hr class="view-divider">
+                <h2>${label}</h2><hr class="view-divider">
                 <p class="view-not-implemented">
                     ${esNoImplementado
-                        ? "Esta clase de negocio aún no está implementada."
-                        : `Error al cargar: ${err.message}`
-                    }
+                        ? "⚙️ Esta clase de negocio aún no está implementada."
+                        : `⚠️ Error: ${err.message}`}
                 </p>
-            </section>
-        `;
+            </section>`;
     }
 
     #resolveHash() {
@@ -137,16 +123,15 @@ class ReportesApp {
     }
 }
 
-// ─── Auth guard e inicialización ──────────────────────────────────
+// ─── Guard + Init ─────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
 
-    const res = await fetch(SESSION_URL, { credentials: "include" });
-    if (!res.ok) { window.location.replace(LOGIN_URL); return; }
-
-    const data = await res.json();
+    // Solo admin y head_admin. Estudiante → dashboard con error=forbidden.
+    const user = await guardPage(["admin", "head_admin"]);
+    if (!user) return;
 
     const usernameEl = document.getElementById("usernameText");
-    if (usernameEl) usernameEl.textContent = data.user?.usuario ?? "Usuario";
+    if (usernameEl) usernameEl.textContent = user.usuario;
 
     document.getElementById("logoutBtn").addEventListener("click", async () => {
         await fetch(LOGOUT_URL, { method: "POST", credentials: "include" });

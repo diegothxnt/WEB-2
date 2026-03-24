@@ -13,5 +13,8 @@
   },
   "findUsuarioById": {
     "text": "SELECT * FROM usuario WHERE id_usuario = $1;"
+  },
+  "findPerfilUsuario": {
+    "text": "SELECT p.nombre AS perfil FROM usuario_perfil up JOIN perfil p ON p.id_perfil = up.id_perfil WHERE up.id_usuario = $1 LIMIT 1;"
   }
 }

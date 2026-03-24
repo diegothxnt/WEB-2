@@ -1,24 +1,41 @@
 {
-  "_comment": "Permisos de perfil a opciones de menú/pantalla.",
-  "options": [
-    { "subsystem": "gestion",  "option": "prestamos",     "profile": "admin"   },
-    { "subsystem": "gestion",  "option": "devoluciones",  "profile": "admin"   },
-    { "subsystem": "gestion",  "option": "inventario",    "profile": "admin"   },
-    { "subsystem": "gestion",  "option": "estado",        "profile": "admin"   },
-    { "subsystem": "gestion",  "option": "ubicacion",     "profile": "admin"   },
-    { "subsystem": "gestion",  "option": "notificaciones","profile": "admin"   },
-    { "subsystem": "reportes", "option": "solvencia",     "profile": "admin"   },
-    { "subsystem": "reportes", "option": "morosos",       "profile": "admin"   },
-    { "subsystem": "reportes", "option": "estadisticas",  "profile": "admin"   },
+  "_comment": "Permisos de perfil a opciones de menú/pantalla. Clave: subsystem-option-profile",
 
-    { "subsystem": "gestion",  "option": "prestamos",     "profile": "default" },
-    { "subsystem": "gestion",  "option": "devoluciones",  "profile": "default" },
-    { "subsystem": "gestion",  "option": "inventario",    "profile": "default" },
-    { "subsystem": "gestion",  "option": "estado",        "profile": "default" },
-    { "subsystem": "gestion",  "option": "ubicacion",     "profile": "default" },
-    { "subsystem": "gestion",  "option": "notificaciones","profile": "default" },
-    { "subsystem": "reportes", "option": "solvencia",     "profile": "default" },
-    { "subsystem": "reportes", "option": "morosos",       "profile": "default" },
-    { "subsystem": "reportes", "option": "estadisticas",  "profile": "default" }
+  "options": [
+
+    { "_section": "── Subsistema gestion — admin y head_admin ──────────────────" },
+    { "subsystem": "gestion", "option": "prestamos",     "profile": "admin"      },
+    { "subsystem": "gestion", "option": "prestamos",     "profile": "head_admin" },
+    { "subsystem": "gestion", "option": "devoluciones",  "profile": "admin"      },
+    { "subsystem": "gestion", "option": "devoluciones",  "profile": "head_admin" },
+    { "subsystem": "gestion", "option": "inventario",    "profile": "admin"      },
+    { "subsystem": "gestion", "option": "inventario",    "profile": "head_admin" },
+    { "subsystem": "gestion", "option": "estado",        "profile": "admin"      },
+    { "subsystem": "gestion", "option": "estado",        "profile": "head_admin" },
+    { "subsystem": "gestion", "option": "ubicacion",     "profile": "admin"      },
+    { "subsystem": "gestion", "option": "ubicacion",     "profile": "head_admin" },
+    { "subsystem": "gestion", "option": "amonestaciones","profile": "admin"      },
+    { "subsystem": "gestion", "option": "amonestaciones","profile": "head_admin" },
+    { "subsystem": "gestion", "option": "notificaciones","profile": "admin"      },
+    { "subsystem": "gestion", "option": "notificaciones","profile": "head_admin" },
+
+    { "_section": "── Subsistema gestion — estudiante (portal propio) ─────────" },
+    { "subsystem": "estudiante", "option": "solicitar",        "profile": "estudiante" },
+    { "subsystem": "estudiante", "option": "mis-prestamos",    "profile": "estudiante" },
+    { "subsystem": "estudiante", "option": "mis-devoluciones", "profile": "estudiante" },
+    { "subsystem": "estudiante", "option": "mi-solvencia",     "profile": "estudiante" },
+    { "subsystem": "estudiante", "option": "notificaciones",   "profile": "estudiante" },
+
+    { "_section": "── Subsistema reportes — admin y head_admin ─────────────────" },
+    { "subsystem": "reportes", "option": "solvencia",    "profile": "admin"      },
+    { "subsystem": "reportes", "option": "solvencia",    "profile": "head_admin" },
+    { "subsystem": "reportes", "option": "morosos",      "profile": "admin"      },
+    { "subsystem": "reportes", "option": "morosos",      "profile": "head_admin" },
+    { "subsystem": "reportes", "option": "estadisticas", "profile": "admin"      },
+    { "subsystem": "reportes", "option": "estadisticas", "profile": "head_admin" },
+
+    { "_section": "── Subsistema admin-usuarios — solo head_admin ──────────────" },
+    { "subsystem": "admin-usuarios", "option": "gestion-usuarios", "profile": "head_admin" }
+
   ]
 }
