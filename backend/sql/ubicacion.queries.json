@@ -1,0 +1,8 @@
+{
+  "listar": {
+    "text": "SELECT ub.id_ubicacion, ub.nombre, COUNT(DISTINCT inv.id_inventario) AS total_items, COALESCE(SUM(inv.cantidad), 0) AS total_unidades FROM ubicacion ub LEFT JOIN inventario inv ON inv.id_ubicacion = ub.id_ubicacion GROUP BY ub.id_ubicacion, ub.nombre ORDER BY ub.nombre"
+  },
+  "actualizar": {
+    "text": "UPDATE ubicacion SET nombre = $1 WHERE id_ubicacion = $2 RETURNING *"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "listar": {
+    "text": "SELECT a.id_amonestacion, a.tipo, a.dias_retraso, a.monto, a.descripcion, a.fecha_generacion, a.pagada, p.nombre AS estudiante, p.cedula, m.id_movimiento, m.fecha AS fecha_prestamo, CASE WHEN pa.id_pago IS NOT NULL THEN json_build_object('id_pago', pa.id_pago, 'numero_transferencia', pa.numero_transferencia, 'monto', pa.monto, 'verificado', pa.verificado, 'fecha_pago', pa.fecha_pago) ELSE NULL END AS pago FROM amonestacion a JOIN usuario u ON u.id_usuario = a.id_usuario JOIN persona p ON p.id_persona = u.id_persona JOIN movimiento m ON m.id_movimiento = a.id_movimiento LEFT JOIN pago_amonestacion pa ON pa.id_amonestacion = a.id_amonestacion ORDER BY a.fecha_generacion DESC"
+  },
+  "asignar": {
+    "text": "INSERT INTO amonestacion (id_movimiento, id_usuario, tipo, dias_retraso, monto, descripcion) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *"
+  },
+  "crearAutomatica": {
+    "text": "INSERT INTO amonestacion (id_movimiento, id_usuario, tipo, dias_retraso, monto, descripcion) VALUES ($1, $2, 'retraso', $3, $4, $5) RETURNING *"
+  },
+  "verificarPago": {
+    "text": "UPDATE pago_amonestacion SET verificado = true, id_usuario_verifico = $1, fecha_verificacion = NOW() WHERE id_pago = $2 RETURNING *"
+  },
+  "marcarPagada": {
+    "text": "UPDATE amonestacion SET pagada = true WHERE id_amonestacion = $1 RETURNING *"
+  },
+  "pagoExistente": {
+    "text": "SELECT id_pago FROM pago_amonestacion WHERE id_amonestacion = $1 LIMIT 1"
+  }
+}

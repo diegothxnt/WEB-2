@@ -1,0 +1,279 @@
+/* ─── views.css ─────────────────────────────────────────────────
+
+/* ─── Estados de carga / error ───────────────────────────────── */
+.view-loading {
+    color: var(--c-muted);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+.view-empty {
+    color: var(--c-muted);
+    font-size: 0.875rem;
+}
+
+.view-not-implemented {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--c-ice);
+    color: var(--c-blue);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* ─── Tabla de datos ─────────────────────────────────────────── */
+.table-scroll {
+    overflow-x: auto;
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--radius);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.data-table th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--c-muted);
+    padding: 10px 16px;
+    background: var(--c-bg);
+    border-bottom: 1.5px solid var(--c-border);
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--c-border);
+    color: var(--c-text);
+    vertical-align: middle;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover td {
+    background: #fafcff;
+}
+
+/* ─── Badges de estado ───────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.badge--ok {
+    background: #e6f9f0;
+    color: #1a9e5e;
+}
+
+.badge--warn {
+    background: #fff7e0;
+    color: #b07800;
+}
+
+.badge--danger {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+}
+
+.badge--neutral {
+    background: var(--c-ice);
+    color: var(--c-blue);
+}
+
+/* ─── Formulario de acción dentro de una vista ───────────────── */
+.view-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 520px;
+    margin-top: 8px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--c-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--c-border);
+    border-radius: 7px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--c-text);
+    background: var(--c-surface);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 3px rgba(29, 111, 164, 0.11);
+}
+
+/* ─── Botones de acción ──────────────────────────────────────── */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 7px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    white-space: nowrap;
+}
+
+.btn-action--primary {
+    background: var(--c-navy);
+    color: #fff;
+}
+
+.btn-action--primary:hover {
+    background: var(--c-blue);
+}
+
+.btn-action--danger {
+    background: var(--c-danger);
+    color: #fff;
+}
+
+.btn-action--danger:hover {
+    opacity: 0.85;
+}
+
+.btn-action--ghost {
+    background: var(--c-ice);
+    color: var(--c-blue);
+    border: 1px solid var(--c-border);
+}
+
+.btn-action--ghost:hover {
+    background: #d4eaf8;
+}
+
+.btn-action:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+/* ─── Barra superior de la vista (título + acciones) ─────────── */
+.view-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.view-toolbar h2 {
+    font-family: var(--font-head);
+    font-size: 1.25rem;
+    color: var(--c-navy);
+}
+
+.view-toolbar__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ─── Panel de detalle expandible ───────────────────────────── */
+.detail-list {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 24px;
+    font-size: 0.875rem;
+    margin-top: 12px;
+}
+
+.detail-list dt {
+    color: var(--c-muted);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-top: 2px;
+}
+
+.detail-list dd {
+    color: var(--c-text);
+}
+
+/* ─── Separador interno de vista ────────────────────────────── */
+.view-divider {
+    border: none;
+    border-top: 1.5px solid var(--c-border);
+    margin: 0 0 20px;
+}
+
+/* ─── Feedback de submit ─────────────────────────────────────── */
+.form-feedback {
+    padding: 10px 14px;
+    border-radius: 7px;
+    font-size: 0.83rem;
+    display: none;
+}
+
+.form-feedback.visible {
+    display: block;
+}
+
+.form-feedback--ok {
+    background: #e6f9f0;
+    color: #1a9e5e;
+    border: 1px solid #b0e8cc;
+}
+
+.form-feedback--error {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border: 1px solid rgba(192, 57, 43, .2);
+}
+
+/* ─── Lista de ítems de un préstamo ─────────────────────────── */
+.items-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.item-chip {
+    background: var(--c-ice);
+    color: var(--c-navy);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}

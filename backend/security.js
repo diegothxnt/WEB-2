@@ -14,6 +14,7 @@
 import fs   from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import db from "./db/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -33,9 +34,7 @@ export class SecurityComponent {
         this.#loadMaps();
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Carga de mapas desde archivos de configuración
-    // ─────────────────────────────────────────────────────────────
+    // ─── Carga de mapas ──────────────────────────────────────────
 
     #loadMaps() {
         const read = (file) =>
@@ -44,25 +43,31 @@ export class SecurityComponent {
         // Mapa de transacciones
         const { transactions } = read("atxMap.json");
         for (const tx of transactions) {
-            this.#atxMap.set(tx.id, {
-                subsystem:  tx.subsystem,
-                className:  tx.className,
-                methodName: tx.methodName
-            });
+            if (tx.id !== undefined) {
+                this.#atxMap.set(tx.id, {
+                    subsystem:  tx.subsystem,
+                    className:  tx.className,
+                    methodName: tx.methodName
+                });
+            }
         }
 
-        // Mapa de permisos a métodos  →  subsystem-className-methodName-profile
+        // Mapa de permisos a métodos — subsystem-className-methodName-profile
         const { permissions } = read("permissionMap.json");
         for (const p of permissions) {
-            const key = `${p.subsystem}-${p.className}-${p.methodName}-${p.profile}`;
-            this.#permissionMap.set(key, true);
+            if (p.subsystem) {
+                const key = `${p.subsystem}-${p.className}-${p.methodName}-${p.profile}`;
+                this.#permissionMap.set(key, true);
+            }
         }
 
-        // Mapa de permisos a opciones  →  subsystem-option-profile
+        // Mapa de permisos a opciones — subsystem-option-profile
         const { options } = read("optionMap.json");
         for (const o of options) {
-            const key = `${o.subsystem}-${o.option}-${o.profile}`;
-            this.#optionMap.set(key, true);
+            if (o.subsystem) {
+                const key = `${o.subsystem}-${o.option}-${o.profile}`;
+                this.#optionMap.set(key, true);
+            }
         }
 
         console.log(
@@ -73,9 +78,7 @@ export class SecurityComponent {
         );
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Consultas públicas
-    // ─────────────────────────────────────────────────────────────
+    // ─── Consultas públicas ───────────────────────────────────────
 
     /**
      * Indica si el id de transacción existe en el mapa.
@@ -85,7 +88,7 @@ export class SecurityComponent {
         return this.#atxMap.has(atx);
     }
 
-    /**
+        /**
      * Retorna los datos de la transacción o null si no existe.
      * @param {number} atx
      * @returns {{ subsystem: string, className: string, methodName: string } | null}
@@ -95,15 +98,38 @@ export class SecurityComponent {
     }
 
     /**
-     * Verifica si el perfil tiene permiso para ejecutar una transacción.
+     * Verifica si el usuario tiene permiso para ejecutar un ATX.
      *
-     * Construye la clave: subsystem-className-methodName-profile
+     * Precedencia:
+     *   1. usuario_permiso_override (manual por head_admin)
+     *      - puede_ejecutar = true  → concedido aunque el perfil no lo tenga
+     *      - puede_ejecutar = false → denegado aunque el perfil lo tenga
+     *   2. permissionMap (basado en perfil, cargado del JSON)
      *
      * @param {string} profile
      * @param {number} atx
-     * @returns {boolean}
+     * @param {number} userId
+     * @returns {Promise<boolean>}
      */
-    hasPermission(profile, atx) {
+    async hasPermission(profile, atx, userId) {
+        // 1. Revisar override individual
+        try {
+            const result = await db.query(
+                `SELECT puede_ejecutar
+                 FROM usuario_permiso_override
+                 WHERE id_usuario = $1 AND atx = $2
+                 LIMIT 1`,
+                [userId, atx]
+            );
+            if (result.rows.length > 0) {
+                return result.rows[0].puede_ejecutar;
+            }
+        } catch (err) {
+            // Si la tabla no existe aún o hay error de BD, caer al mapa
+            console.warn("[Security] No se pudo consultar override:", err.message);
+        }
+
+        // 2. Fallback: permissionMap basado en perfil
         const tx = this.#atxMap.get(atx);
         if (!tx) return false;
         const key = `${tx.subsystem}-${tx.className}-${tx.methodName}-${profile}`;
@@ -125,24 +151,21 @@ export class SecurityComponent {
         return this.#optionMap.has(key);
     }
 
+    // ─── Ejecución por reflexión ──────────────────────────────────
+
     /**
-     * Ejecuta un método de una clase de negocio por reflexión.
+     * Importa dinámicamente ./BO/{subsystem}/{className}.js,
+     * instancia la clase y llama al método correspondiente.
      *
-     * Flujo:
-     *   1. Importa dinámicamente ./business/{subsystem}/{className}.js
-     *   2. Instancia la clase exportada por defecto
-     *   3. Llama al método por nombre (bracket notation)
-     *   4. Responde con el resultado o con el error apropiado
-     *
-     * @param {{ subsystem: string, className: string, methodName: string }} txData
-     * @param {Array}                            params
-     * @param {import("express").Request}        req
-     * @param {import("express").Response}       res
+     * @param {{ subsystem, className, methodName }} txData
+     * @param {Array}   params
+     * @param {Request} req
+     * @param {Response} res
      */
     async exeMethod(txData, params, req, res) {
         const modulePath = path.join(
             __dirname,
-            "business",
+            "BO",
             txData.subsystem,
             `${txData.className}.js`
         );
@@ -151,14 +174,13 @@ export class SecurityComponent {
 
         let BusinessClass;
         try {
-            const module = await import(moduleURL);
-            // Acepta export default o export nombrado igual al className
-            BusinessClass = module.default ?? module[txData.className];
+            const mod = await import(moduleURL);
+            BusinessClass = mod.default ?? mod[txData.className];
         } catch (err) {
             if (err.code === "ERR_MODULE_NOT_FOUND" || err.code === "ERR_LOAD_URL") {
                 return res.status(501).json({
                     success: false,
-                    message: `Clase de negocio "${txData.className}" aún no implementada`
+                    message: `Business Object "${txData.className}" aún no implementado`
                 });
             }
             throw err;

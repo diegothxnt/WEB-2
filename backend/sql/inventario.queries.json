@@ -1,0 +1,14 @@
+{
+  "listar": {
+    "text": "SELECT inv.id_inventario, i.id_item, i.nombre AS item, i.descripcion, c.nombre AS categoria, tc.nombre AS tipo_categoria, ub.nombre AS ubicacion, ub.id_ubicacion, inv.cantidad, ei.nombre AS estado, ei.id_estado_item FROM inventario inv JOIN item i ON i.id_item = inv.id_item JOIN categoria c ON c.id_categoria = i.id_categoria JOIN tipo_categoria tc ON tc.id_tipo_categoria = c.id_tipo_categoria JOIN ubicacion ub ON ub.id_ubicacion = inv.id_ubicacion JOIN estado_item ei ON ei.id_estado_item = i.id_estado_item ORDER BY tc.nombre, c.nombre, i.nombre"
+  },
+  "actualizar": {
+    "text": "UPDATE inventario SET cantidad = $1, id_ubicacion = $2 WHERE id_inventario = $3 RETURNING *"
+  },
+  "ubicacionesCatalogo": {
+    "text": "SELECT id_ubicacion, nombre FROM ubicacion ORDER BY nombre"
+  },
+  "buscarPorId": {
+    "text": "SELECT inv.*, i.nombre AS item, i.descripcion, ei.nombre AS estado FROM inventario inv JOIN item i ON i.id_item = inv.id_item JOIN estado_item ei ON ei.id_estado_item = i.id_estado_item WHERE inv.id_inventario = $1"
+  }
+}

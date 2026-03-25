@@ -1,0 +1,17 @@
+{
+  "listarPorUsuario": {
+    "text": "SELECT id_notificacion, mensaje, leida, fecha FROM notificacion WHERE id_usuario = $1 ORDER BY fecha DESC LIMIT 50"
+  },
+  "listarTodas": {
+    "text": "SELECT n.id_notificacion, n.mensaje, n.leida, n.fecha, p.nombre AS usuario FROM notificacion n JOIN usuario u ON u.id_usuario = n.id_usuario JOIN persona p ON p.id_persona = u.id_persona ORDER BY n.fecha DESC LIMIT 100"
+  },
+  "enviar": {
+    "text": "INSERT INTO notificacion (id_usuario, mensaje) VALUES ($1, $2) RETURNING *"
+  },
+  "marcarLeida": {
+    "text": "UPDATE notificacion SET leida = true WHERE id_notificacion = $1 AND id_usuario = $2 RETURNING *"
+  },
+  "marcarTodasLeidas": {
+    "text": "UPDATE notificacion SET leida = true WHERE id_usuario = $1"
+  }
+}

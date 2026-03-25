@@ -1,0 +1,38 @@
+{
+  "listar": {
+    "text": "SELECT m.id_movimiento, m.fecha, m.fecha_inicio, m.fecha_fin, m.modalidad, p.nombre AS solicitante, p.cedula, p.correo, per.codigo AS periodo, json_agg(json_build_object('id_inventario', inv.id_inventario, 'item', i.nombre, 'cantidad', dm.cantidad)) AS items FROM movimiento m JOIN usuario u ON u.id_usuario = m.id_usuario JOIN persona p ON p.id_persona = u.id_persona JOIN periodo per ON per.id_periodo = m.id_periodo JOIN detalle_movimiento dm ON dm.id_movimiento = m.id_movimiento JOIN inventario inv ON inv.id_inventario = dm.id_inventario JOIN item i ON i.id_item = inv.id_item WHERE m.id_tipo_movimiento = (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'prestamo') GROUP BY m.id_movimiento, p.nombre, p.cedula, p.correo, per.codigo ORDER BY m.fecha DESC"
+  },
+  "crear": {
+    "text": "INSERT INTO movimiento (id_usuario, id_tipo_movimiento, id_periodo, fecha_inicio, fecha_fin, modalidad) VALUES ($1, (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'prestamo'), (SELECT id_periodo FROM periodo WHERE codigo = $2), $3, $4, $5) RETURNING *"
+  },
+  "crearDetalle": {
+    "text": "INSERT INTO detalle_movimiento (id_movimiento, id_inventario, cantidad) VALUES ($1, $2, $3) RETURNING *"
+  },
+  "reducirInventario": {
+    "text": "UPDATE inventario SET cantidad = cantidad - $1 WHERE id_inventario = $2 AND cantidad >= $1 RETURNING *"
+  },
+  "restaurarInventario": {
+    "text": "UPDATE inventario SET cantidad = cantidad + $1 WHERE id_inventario = $2 RETURNING *"
+  },
+  "detallesPorMovimiento": {
+    "text": "SELECT dm.id_detalle_movimiento, dm.id_inventario, dm.cantidad FROM detalle_movimiento dm WHERE dm.id_movimiento = $1"
+  },
+  "anular": {
+    "text": "DELETE FROM movimiento WHERE id_movimiento = $1 AND id_tipo_movimiento = (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'prestamo') RETURNING *"
+  },
+  "modificarFecha": {
+    "text": "UPDATE movimiento SET fecha_fin = $1 WHERE id_movimiento = $2 AND id_tipo_movimiento = (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'prestamo') RETURNING *"
+  },
+  "buscarPorId": {
+    "text": "SELECT m.*, per.codigo AS periodo FROM movimiento m JOIN periodo per ON per.id_periodo = m.id_periodo WHERE m.id_movimiento = $1"
+  },
+  "estadosCatalogo": {
+    "text": "SELECT id_estado_item, nombre FROM estado_item ORDER BY nombre"
+  },
+  "periodosCatalogo": {
+    "text": "SELECT id_periodo, codigo FROM periodo ORDER BY codigo DESC"
+  },
+  "usuariosCatalogo": {
+    "text": "SELECT u.id_usuario, p.nombre, p.cedula FROM usuario u JOIN persona p ON p.id_persona = u.id_persona WHERE u.activo = true ORDER BY p.nombre"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "listarEstado": {
+    "text": "SELECT i.id_item, i.nombre, i.descripcion, ei.id_estado_item, ei.nombre AS estado, c.nombre AS categoria, tc.nombre AS tipo_categoria, COALESCE(SUM(inv.cantidad), 0) AS cantidad_total FROM item i JOIN estado_item ei ON ei.id_estado_item = i.id_estado_item JOIN categoria c ON c.id_categoria = i.id_categoria JOIN tipo_categoria tc ON tc.id_tipo_categoria = c.id_tipo_categoria LEFT JOIN inventario inv ON inv.id_item = i.id_item GROUP BY i.id_item, i.nombre, i.descripcion, ei.id_estado_item, ei.nombre, c.nombre, tc.nombre ORDER BY ei.nombre, i.nombre"
+  },
+  "actualizarEstado": {
+    "text": "UPDATE item SET id_estado_item = $1 WHERE id_item = $2 RETURNING *"
+  },
+  "estadosCatalogo": {
+    "text": "SELECT id_estado_item, nombre FROM estado_item ORDER BY nombre"
+  }
+}

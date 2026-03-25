@@ -61,14 +61,15 @@ app.post("/api/toProcess", async (req, res) => {
         return res.status(404).json({ success: false, message: `Transacción ${atx} no encontrada` });
     }
 
-    const txData = security.getTransaction(atx);
-
+    const txData  = security.getTransaction(atx);
+    
     // Perfil del usuario — leído en el login desde usuario_perfil.
     // Fallback 'estudiante' (perfil de menor privilegio) si por alguna razón no está en sesión.
     const profile = req.session.user.profile ?? "estudiante";
+    const userId  = req.session.user.id;
 
     // 3. Verificar permiso del perfil sobre el atx
-    if (!security.hasPermission(profile, atx)) {
+    if (!await security.hasPermission(profile, atx, userId)) {
         return res.status(403).json({ success: false, message: "Sin permiso para ejecutar esta transacción" });
     }
 

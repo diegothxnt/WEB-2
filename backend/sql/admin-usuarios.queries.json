@@ -1,0 +1,29 @@
+{
+  "listarUsuarios": {
+    "text": "SELECT u.id_usuario, p.nombre, p.cedula, p.correo, u.usuario, u.activo, u.fecha_creacion, pf.id_perfil, pf.nombre AS perfil FROM usuario u JOIN persona p ON p.id_persona = u.id_persona LEFT JOIN usuario_perfil up ON up.id_usuario = u.id_usuario LEFT JOIN perfil pf ON pf.id_perfil = up.id_perfil ORDER BY p.nombre"
+  },
+  "asignarPerfil": {
+    "text": "INSERT INTO usuario_perfil (id_usuario, id_perfil) VALUES ($1, $2) ON CONFLICT (id_usuario) DO UPDATE SET id_perfil = EXCLUDED.id_perfil RETURNING *"
+  },
+  "crearPersona": {
+    "text": "INSERT INTO persona (nombre, cedula, correo) VALUES ($1, $2, $3) RETURNING *"
+  },
+  "crearUsuario": {
+    "text": "INSERT INTO usuario (id_persona, usuario, contrasena) VALUES ($1, $2, $3) RETURNING *"
+  },
+  "asignarPerfilNuevo": {
+    "text": "INSERT INTO usuario_perfil (id_usuario, id_perfil) VALUES ($1, $2) RETURNING *"
+  },
+  "listarPerfiles": {
+    "text": "SELECT id_perfil, nombre, descripcion FROM perfil ORDER BY nombre"
+  },
+  "upsertOverride": {
+    "text": "INSERT INTO usuario_permiso_override (id_usuario, atx, puede_ejecutar) VALUES ($1, $2, $3) ON CONFLICT (id_usuario, atx) DO UPDATE SET puede_ejecutar = EXCLUDED.puede_ejecutar RETURNING *"
+  },
+  "removerOverride": {
+    "text": "DELETE FROM usuario_permiso_override WHERE id_usuario = $1 AND atx = $2 RETURNING *"
+  },
+  "listarOverridesDeUsuario": {
+    "text": "SELECT upo.atx, upo.puede_ejecutar FROM usuario_permiso_override upo WHERE upo.id_usuario = $1 ORDER BY upo.atx"
+  }
+}

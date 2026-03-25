@@ -1,0 +1,20 @@
+{
+  "listar": {
+    "text": "SELECT m.id_movimiento, m.fecha AS fecha_devolucion, p.nombre AS estudiante, p.cedula, per.codigo AS periodo, json_agg(json_build_object('item', i.nombre, 'cantidad', dm.cantidad, 'estado', COALESCE(ed.nombre, 'perfecto'))) AS items FROM movimiento m JOIN usuario u ON u.id_usuario = m.id_usuario JOIN persona p ON p.id_persona = u.id_persona JOIN periodo per ON per.id_periodo = m.id_periodo JOIN detalle_movimiento dm ON dm.id_movimiento = m.id_movimiento JOIN inventario inv ON inv.id_inventario = dm.id_inventario JOIN item i ON i.id_item = inv.id_item LEFT JOIN estado_devolucion ed ON ed.id_estado_devolucion = dm.id_estado_devolucion WHERE m.id_tipo_movimiento = (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'devolucion') GROUP BY m.id_movimiento, p.nombre, p.cedula, per.codigo ORDER BY m.fecha DESC"
+  },
+  "registrar": {
+    "text": "INSERT INTO movimiento (id_usuario, id_tipo_movimiento, id_periodo) VALUES ($1, (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'devolucion'), (SELECT id_periodo FROM periodo WHERE codigo = $2)) RETURNING *"
+  },
+  "crearDetalle": {
+    "text": "INSERT INTO detalle_movimiento (id_movimiento, id_inventario, cantidad, id_estado_devolucion) VALUES ($1, $2, $3, $4) RETURNING *"
+  },
+  "restaurarInventario": {
+    "text": "UPDATE inventario SET cantidad = cantidad + $1 WHERE id_inventario = $2 RETURNING *"
+  },
+  "estadosDevolucionCatalogo": {
+    "text": "SELECT id_estado_devolucion, nombre FROM estado_devolucion ORDER BY nombre"
+  },
+  "prestamosActivosPorUsuario": {
+    "text": "SELECT m.id_movimiento, m.fecha, m.fecha_fin, per.codigo AS periodo, json_agg(json_build_object('id_inventario', inv.id_inventario, 'item', i.nombre, 'cantidad', dm.cantidad)) AS items FROM movimiento m JOIN periodo per ON per.id_periodo = m.id_periodo JOIN detalle_movimiento dm ON dm.id_movimiento = m.id_movimiento JOIN inventario inv ON inv.id_inventario = dm.id_inventario JOIN item i ON i.id_item = inv.id_item WHERE m.id_usuario = $1 AND m.id_tipo_movimiento = (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'prestamo') GROUP BY m.id_movimiento, per.codigo ORDER BY m.fecha DESC"
+  }
+}
