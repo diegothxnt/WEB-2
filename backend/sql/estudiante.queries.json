@@ -1,32 +1,20 @@
 {
   "itemsDisponibles": {
-    "text": "SELECT inv.id_inventario, i.nombre AS item, i.descripcion, c.nombre AS categoria, tc.nombre AS tipo_categoria, ub.nombre AS ubicacion, inv.cantidad, ei.nombre AS estado FROM inventario inv JOIN item i ON i.id_item = inv.id_item JOIN categoria c ON c.id_categoria = i.id_categoria JOIN tipo_categoria tc ON tc.id_tipo_categoria = c.id_tipo_categoria JOIN ubicacion ub ON ub.id_ubicacion = inv.id_ubicacion JOIN estado_item ei ON ei.id_estado_item = i.id_estado_item WHERE inv.cantidad > 0 AND ei.nombre = 'operativo' ORDER BY tc.nombre, c.nombre, i.nombre"
+    "text": "SELECT i.id_inventario, i.id_item, it.nombre, it.descripcion, i.cantidad, u.nombre AS ubicacion FROM inventario i JOIN item it ON it.id_item = i.id_item LEFT JOIN ubicacion u ON u.id_ubicacion = i.id_ubicacion WHERE i.cantidad > 0 AND it.id_estado_item = 1 ORDER BY it.nombre;"
   },
   "solicitar": {
-    "text": "INSERT INTO movimiento (id_usuario, id_tipo_movimiento, id_periodo, fecha_inicio, fecha_fin, modalidad) VALUES ($1, (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'prestamo'), (SELECT id_periodo FROM periodo WHERE codigo = $2), $3, $4, $5) RETURNING *"
-  },
-  "crearDetallePrestamo": {
-    "text": "INSERT INTO detalle_movimiento (id_movimiento, id_inventario, cantidad) VALUES ($1, $2, $3) RETURNING *"
+    "text": "INSERT INTO prestamo (id_usuario, id_periodo, fecha_inicio, fecha_fin, modalidad, estado) VALUES ($1, $2, $3, $4, $5, 'SOLICITADO') RETURNING id_prestamo, id_usuario, id_periodo, fecha_inicio, fecha_fin, modalidad, estado;"
   },
   "reducirInventario": {
-    "text": "UPDATE inventario SET cantidad = cantidad - $1 WHERE id_inventario = $2 AND cantidad >= $1 RETURNING *"
+    "text": "UPDATE inventario SET cantidad = cantidad - $1 WHERE id_inventario = $2;"
+  },
+  "crearDetallePrestamo": {
+    "text": "INSERT INTO detalle_prestamo (id_prestamo, id_inventario, cantidad) VALUES ($1, $2, $3);"
   },
   "misPrestamos": {
-    "text": "SELECT m.id_movimiento, m.fecha, m.fecha_inicio, m.fecha_fin, m.modalidad, per.codigo AS periodo, json_agg(json_build_object('item', i.nombre, 'cantidad', dm.cantidad)) AS items FROM movimiento m JOIN periodo per ON per.id_periodo = m.id_periodo JOIN detalle_movimiento dm ON dm.id_movimiento = m.id_movimiento JOIN inventario inv ON inv.id_inventario = dm.id_inventario JOIN item i ON i.id_item = inv.id_item WHERE m.id_usuario = $1 AND m.id_tipo_movimiento = (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'prestamo') GROUP BY m.id_movimiento, per.codigo ORDER BY m.fecha DESC"
-  },
-  "misDevoluciones": {
-    "text": "SELECT m.id_movimiento, m.fecha AS fecha_devolucion, per.codigo AS periodo, json_agg(json_build_object('item', i.nombre, 'cantidad', dm.cantidad, 'estado', COALESCE(ed.nombre, 'perfecto'))) AS items FROM movimiento m JOIN periodo per ON per.id_periodo = m.id_periodo JOIN detalle_movimiento dm ON dm.id_movimiento = m.id_movimiento JOIN inventario inv ON inv.id_inventario = dm.id_inventario JOIN item i ON i.id_item = inv.id_item LEFT JOIN estado_devolucion ed ON ed.id_estado_devolucion = dm.id_estado_devolucion WHERE m.id_usuario = $1 AND m.id_tipo_movimiento = (SELECT id_tipo_movimiento FROM tipo_movimiento WHERE nombre = 'devolucion') GROUP BY m.id_movimiento, per.codigo ORDER BY m.fecha DESC"
-  },
-  "miSolvencia": {
-    "text": "SELECT a.id_amonestacion, a.tipo, a.dias_retraso, a.monto, a.descripcion, a.fecha_generacion, a.pagada, pa.numero_transferencia, pa.verificado FROM amonestacion a LEFT JOIN pago_amonestacion pa ON pa.id_amonestacion = a.id_amonestacion WHERE a.id_usuario = $1 ORDER BY a.fecha_generacion DESC"
-  },
-  "registrarPago": {
-    "text": "INSERT INTO pago_amonestacion (id_amonestacion, numero_transferencia, monto) VALUES ($1, $2, $3) RETURNING *"
-  },
-  "amonestacionPorId": {
-    "text": "SELECT id_amonestacion, monto, pagada FROM amonestacion WHERE id_amonestacion = $1 AND id_usuario = $2 LIMIT 1"
+    "text": "SELECT p.id_prestamo, p.fecha_inicio, p.fecha_fin, p.modalidad, p.estado FROM prestamo p WHERE p.id_usuario = $1 ORDER BY p.id_prestamo DESC;"
   },
   "periodosCatalogo": {
-    "text": "SELECT id_periodo, codigo FROM periodo ORDER BY codigo DESC LIMIT 5"
+    "text": "SELECT id_periodo, nombre FROM periodo ORDER BY nombre;"
   }
 }

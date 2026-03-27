@@ -57,6 +57,7 @@ app.post("/api/toProcess", async (req, res) => {
     }
 
     // 2. Buscar transacción en el mapa
+    await security.ready;
     if (!security.atxExists(atx)) {
         return res.status(404).json({ success: false, message: `Transacción ${atx} no encontrada` });
     }

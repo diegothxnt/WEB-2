@@ -1,14 +1,44 @@
 {
   "listar": {
-    "text": "SELECT inv.id_inventario, i.id_item, i.nombre AS item, i.descripcion, c.nombre AS categoria, tc.nombre AS tipo_categoria, ub.nombre AS ubicacion, ub.id_ubicacion, inv.cantidad, ei.nombre AS estado, ei.id_estado_item FROM inventario inv JOIN item i ON i.id_item = inv.id_item JOIN categoria c ON c.id_categoria = i.id_categoria JOIN tipo_categoria tc ON tc.id_tipo_categoria = c.id_tipo_categoria JOIN ubicacion ub ON ub.id_ubicacion = inv.id_ubicacion JOIN estado_item ei ON ei.id_estado_item = i.id_estado_item ORDER BY tc.nombre, c.nombre, i.nombre"
+    "text": "SELECT i.id_inventario, i.id_item, it.nombre AS item, it.descripcion, i.cantidad, i.id_ubicacion, u.nombre AS ubicacion, it.id_categoria, c.nombre AS categoria, it.id_estado_item, ei.nombre AS estado_item FROM inventario i JOIN item it ON it.id_item = i.id_item LEFT JOIN categoria c ON c.id_categoria = it.id_categoria LEFT JOIN estado_item ei ON ei.id_estado_item = it.id_estado_item LEFT JOIN ubicacion u ON u.id_ubicacion = i.id_ubicacion ORDER BY it.nombre, i.id_inventario;"
   },
-  "actualizar": {
-    "text": "UPDATE inventario SET cantidad = $1, id_ubicacion = $2 WHERE id_inventario = $3 RETURNING *"
+  "categoriasCatalogo": {
+    "text": "SELECT id_categoria, nombre FROM categoria ORDER BY nombre;"
+  },
+  "estadosCatalogo": {
+    "text": "SELECT id_estado_item, nombre FROM estado_item ORDER BY nombre;"
   },
   "ubicacionesCatalogo": {
-    "text": "SELECT id_ubicacion, nombre FROM ubicacion ORDER BY nombre"
+    "text": "SELECT id_ubicacion, nombre FROM ubicacion ORDER BY nombre;"
   },
-  "buscarPorId": {
-    "text": "SELECT inv.*, i.nombre AS item, i.descripcion, ei.nombre AS estado FROM inventario inv JOIN item i ON i.id_item = inv.id_item JOIN estado_item ei ON ei.id_estado_item = i.id_estado_item WHERE inv.id_inventario = $1"
+  "caracteristicasCatalogo": {
+    "text": "SELECT id_caracteristica, nombre FROM caracteristica ORDER BY nombre;"
+  },
+  "crearItem": {
+    "text": "INSERT INTO item (nombre, descripcion, id_categoria, id_estado_item) VALUES ($1, $2, $3, $4) RETURNING id_item, nombre, descripcion, id_categoria, id_estado_item;"
+  },
+  "crearInventario": {
+    "text": "INSERT INTO inventario (id_item, id_ubicacion, cantidad) VALUES ($1, $2, $3) RETURNING id_inventario, id_item, id_ubicacion, cantidad;"
+  },
+  "crearCaracteristicaItem": {
+    "text": "INSERT INTO caracteristica_item (id_item, id_caracteristica, valor) VALUES ($1, $2, $3) RETURNING id_item, id_caracteristica, valor;"
+  },
+  "actualizarItem": {
+    "text": "UPDATE item SET nombre = COALESCE($1, nombre), descripcion = COALESCE($2, descripcion), id_categoria = COALESCE($3, id_categoria), id_estado_item = COALESCE($4, id_estado_item) WHERE id_item = $5 RETURNING id_item, nombre, descripcion, id_categoria, id_estado_item;"
+  },
+  "actualizarInventario": {
+    "text": "UPDATE inventario SET cantidad = COALESCE($1, cantidad), id_ubicacion = COALESCE($2, id_ubicacion) WHERE id_inventario = $3 RETURNING id_inventario, id_item, id_ubicacion, cantidad;"
+  },
+  "limpiarCaracteristicasItem": {
+    "text": "DELETE FROM caracteristica_item WHERE id_item = $1;"
+  },
+  "referenciasItem": {
+    "text": "SELECT COUNT(*)::int AS total FROM detalle_movimiento dm JOIN inventario i ON i.id_inventario = dm.id_inventario WHERE i.id_item = $1;"
+  },
+  "eliminarInventariosItem": {
+    "text": "DELETE FROM inventario WHERE id_item = $1 RETURNING id_inventario;"
+  },
+  "eliminarItem": {
+    "text": "DELETE FROM item WHERE id_item = $1 RETURNING id_item;"
   }
 }

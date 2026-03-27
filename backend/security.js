@@ -3,7 +3,7 @@
  * Componente de seguridad del sistema.
  *
  * Singleton — se instancia una vez al arrancar el servidor.
- * El constructor carga los tres mapas de seguridad desde config/.
+ * Los mapas de seguridad se cargan desde la base de datos.
  *
  * Mapas internos:
  *   atxMap        — id  → { subsystem, className, methodName }
@@ -11,71 +11,115 @@
  *   optionMap     — "subsystem-option-profile"               → true
  */
 
-import fs   from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import db from "./db/db.js";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
+
+const SQL_ATX = `
+    SELECT
+        t.id_transaccion AS id,
+        s.nombre         AS subsystem,
+        c.nombre         AS class_name,
+        m.nombre         AS method_name
+    FROM transaccion t
+    JOIN subsistema s ON s.id_subsistema = t.id_subsistema
+    JOIN clase c      ON c.id_clase = t.id_clase
+    JOIN metodo m     ON m.id_metodo = t.id_metodo
+    ORDER BY t.id_transaccion
+`;
+
+const SQL_PERMISSIONS = `
+    SELECT
+        t.id_transaccion AS id,
+        s.nombre         AS subsystem,
+        c.nombre         AS class_name,
+        m.nombre         AS method_name,
+        p.nombre         AS profile
+    FROM transaccion_perfil tp
+    JOIN transaccion t ON t.id_transaccion = tp.id_transaccion
+    JOIN subsistema s  ON s.id_subsistema = t.id_subsistema
+    JOIN clase c       ON c.id_clase = t.id_clase
+    JOIN metodo m      ON m.id_metodo = t.id_metodo
+    JOIN perfil p      ON p.id_perfil = tp.id_perfil
+    ORDER BY t.id_transaccion, p.nombre
+`;
+
+const SQL_OPTIONS = `
+    SELECT
+        o.id_opcion AS id,
+        s.nombre    AS subsystem,
+        o.codigo    AS option_code,
+        p.nombre    AS profile
+    FROM opcion_perfil op
+    JOIN opcion o    ON o.id_opcion = op.id_opcion
+    JOIN subsistema s ON s.id_subsistema = o.id_subsistema
+    JOIN perfil p    ON p.id_perfil = op.id_perfil
+    ORDER BY s.nombre, o.codigo, p.nombre
+`;
 
 export class SecurityComponent {
 
     /** @type {Map<number, { subsystem: string, className: string, methodName: string }>} */
-    #atxMap        = new Map();
+    #atxMap = new Map();
 
     /** @type {Map<string, true>} */
     #permissionMap = new Map();
 
     /** @type {Map<string, true>} */
-    #optionMap     = new Map();
+    #optionMap = new Map();
 
     constructor() {
-        this.#loadMaps();
+        this.ready = this.#loadMaps().catch(err => {
+            console.error("[Security] No se pudieron cargar los mapas de seguridad:", err);
+            return false;
+        });
     }
 
-    // ─── Carga de mapas ──────────────────────────────────────────
+    ready = Promise.resolve();
 
-    #loadMaps() {
-        const read = (file) =>
-            JSON.parse(fs.readFileSync(path.join(__dirname, "config", file), "utf-8"));
+    async #loadMaps() {
+        this.#atxMap.clear();
+        this.#permissionMap.clear();
+        this.#optionMap.clear();
 
-        // Mapa de transacciones
-        const { transactions } = read("atxMap.json");
-        for (const tx of transactions) {
-            if (tx.id !== undefined) {
-                this.#atxMap.set(tx.id, {
-                    subsystem:  tx.subsystem,
-                    className:  tx.className,
-                    methodName: tx.methodName
+        try {
+            const [atxRes, permRes, optRes] = await Promise.all([
+                db.query(SQL_ATX),
+                db.query(SQL_PERMISSIONS),
+                db.query(SQL_OPTIONS)
+            ]);
+
+            for (const row of atxRes.rows) {
+                this.#atxMap.set(Number(row.id), {
+                    subsystem: row.subsystem,
+                    className: row.class_name,
+                    methodName: row.method_name
                 });
             }
-        }
 
-        // Mapa de permisos a métodos — subsystem-className-methodName-profile
-        const { permissions } = read("permissionMap.json");
-        for (const p of permissions) {
-            if (p.subsystem) {
-                const key = `${p.subsystem}-${p.className}-${p.methodName}-${p.profile}`;
+            for (const row of permRes.rows) {
+                const key = `${row.subsystem}-${row.class_name}-${row.method_name}-${row.profile}`;
                 this.#permissionMap.set(key, true);
             }
-        }
 
-        // Mapa de permisos a opciones — subsystem-option-profile
-        const { options } = read("optionMap.json");
-        for (const o of options) {
-            if (o.subsystem) {
-                const key = `${o.subsystem}-${o.option}-${o.profile}`;
+            for (const row of optRes.rows) {
+                const key = `${row.subsystem}-${row.option_code}-${row.profile}`;
                 this.#optionMap.set(key, true);
             }
-        }
 
-        console.log(
-            `[Security] Mapas cargados — ` +
-            `atx: ${this.#atxMap.size} | ` +
-            `permisos: ${this.#permissionMap.size} | ` +
-            `opciones: ${this.#optionMap.size}`
-        );
+            console.log(
+                `[Security] Mapas cargados desde BD — ` +
+                `atx: ${this.#atxMap.size} | ` +
+                `permisos: ${this.#permissionMap.size} | ` +
+                `opciones: ${this.#optionMap.size}`
+            );
+        } catch (err) {
+            console.error("[Security] Error cargando mapas desde BD:", err);
+            throw err;
+        }
     }
 
     // ─── Consultas públicas ───────────────────────────────────────
@@ -85,16 +129,16 @@ export class SecurityComponent {
      * @param {number} atx
      */
     atxExists(atx) {
-        return this.#atxMap.has(atx);
+        return this.#atxMap.has(Number(atx));
     }
 
-        /**
+    /**
      * Retorna los datos de la transacción o null si no existe.
      * @param {number} atx
      * @returns {{ subsystem: string, className: string, methodName: string } | null}
      */
     getTransaction(atx) {
-        return this.#atxMap.get(atx) ?? null;
+        return this.#atxMap.get(Number(atx)) ?? null;
     }
 
     /**
@@ -102,9 +146,7 @@ export class SecurityComponent {
      *
      * Precedencia:
      *   1. usuario_permiso_override (manual por head_admin)
-     *      - puede_ejecutar = true  → concedido aunque el perfil no lo tenga
-     *      - puede_ejecutar = false → denegado aunque el perfil lo tenga
-     *   2. permissionMap (basado en perfil, cargado del JSON)
+     *   2. permissionMap (basado en perfil, cargado desde la BD)
      *
      * @param {string} profile
      * @param {number} atx
@@ -112,26 +154,28 @@ export class SecurityComponent {
      * @returns {Promise<boolean>}
      */
     async hasPermission(profile, atx, userId) {
-        // 1. Revisar override individual
+        await this.ready;
+        const atxId = Number(atx);
+
         try {
             const result = await db.query(
                 `SELECT puede_ejecutar
                  FROM usuario_permiso_override
                  WHERE id_usuario = $1 AND atx = $2
                  LIMIT 1`,
-                [userId, atx]
+                [userId, atxId]
             );
+
             if (result.rows.length > 0) {
                 return result.rows[0].puede_ejecutar;
             }
         } catch (err) {
-            // Si la tabla no existe aún o hay error de BD, caer al mapa
             console.warn("[Security] No se pudo consultar override:", err.message);
         }
 
-        // 2. Fallback: permissionMap basado en perfil
-        const tx = this.#atxMap.get(atx);
+        const tx = this.#atxMap.get(atxId);
         if (!tx) return false;
+
         const key = `${tx.subsystem}-${tx.className}-${tx.methodName}-${profile}`;
         return this.#permissionMap.has(key);
     }
@@ -139,14 +183,13 @@ export class SecurityComponent {
     /**
      * Verifica si el perfil tiene permiso para acceder a una opción de menú.
      *
-     * Construye la clave: subsystem-option-profile
-     *
      * @param {string} profile
      * @param {string} subsystem
      * @param {string} option
      * @returns {boolean}
      */
-    hasOptionPermission(profile, subsystem, option) {
+    async hasOptionPermission(profile, subsystem, option) {
+        await this.ready;
         const key = `${subsystem}-${option}-${profile}`;
         return this.#optionMap.has(key);
     }
@@ -163,6 +206,7 @@ export class SecurityComponent {
      * @param {Response} res
      */
     async exeMethod(txData, params, req, res) {
+        await this.ready;
         const modulePath = path.join(
             __dirname,
             "BO",

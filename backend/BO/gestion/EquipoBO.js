@@ -25,4 +25,10 @@ export default class EquipoBO {
 
         return result.rows[0];
     }
+
+    async estadosCatalogo(_params, _req) {
+        const result = await db.query(queries.estadosCatalogo.text, []);
+        return result.rows;
+    }
 }
+

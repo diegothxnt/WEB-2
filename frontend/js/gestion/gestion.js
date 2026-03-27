@@ -85,6 +85,10 @@ const VISTAS = {
                 <td>${fmtFecha(r.fecha)}</td>
                 <td>${fmtFecha(r.fecha_fin)}</td>
                 <td>${itemsChips(r.items)}</td>
+                <td>
+                    <button class="btn-action btn-action--primary btn-anular-prestamo" data-id="${r.id_movimiento}">Anular</button>
+                    <button class="btn-action btn-modificar-fecha" data-id="${r.id_movimiento}" data-fecha="${r.fecha_fin ?? ''}">Cambiar fecha</button>
+                </td>
             </tr>`).join("");
         return `
             <div class="view-toolbar">
@@ -94,7 +98,7 @@ const VISTAS = {
                 <table class="data-table">
                     <thead><tr>
                         <th>#</th><th>Solicitante</th><th>Período</th>
-                        <th>Fecha</th><th>Entrega</th><th>Ítems</th>
+                        <th>Fecha</th><th>Entrega</th><th>Ítems</th><th>Acciones</th>
                     </tr></thead>
                     <tbody>${filas}</tbody>
                 </table>
@@ -135,6 +139,9 @@ const VISTAS = {
                 <td>${r.ubicacion}</td>
                 <td><strong>${r.cantidad}</strong></td>
                 <td>${badgeEstado(r.estado)}</td>
+                <td>
+                    <button class="btn-action btn-action--primary btn-editar-inventario" data-id="${r.id_inventario}">Editar</button>
+                </td>
             </tr>`).join("");
         return `
             <div class="view-toolbar"><h2>Inventario</h2></div>
@@ -142,7 +149,7 @@ const VISTAS = {
                 <table class="data-table">
                     <thead><tr>
                         <th>Ítem</th><th>Categoría</th><th>Ubicación</th>
-                        <th>Cantidad</th><th>Estado</th>
+                        <th>Cantidad</th><th>Estado</th><th>Acciones</th>
                     </tr></thead>
                     <tbody>${filas}</tbody>
                 </table>
@@ -159,6 +166,9 @@ const VISTAS = {
                 <td>${badgeEstado(r.estado)}</td>
                 <td>${r.cantidad_total}</td>
                 <td>${r.descripcion ?? "—"}</td>
+                <td>
+                    <button class="btn-action btn-action--primary btn-cambiar-estado" data-id="${r.id_item}">Cambiar</button>
+                </td>
             </tr>`).join("");
         return `
             <div class="view-toolbar"><h2>Estado de Equipos</h2></div>
@@ -166,7 +176,7 @@ const VISTAS = {
                 <table class="data-table">
                     <thead><tr>
                         <th>Ítem</th><th>Categoría</th><th>Estado</th>
-                        <th>Unidades</th><th>Descripción</th>
+                        <th>Unidades</th><th>Descripción</th><th>Acciones</th>
                     </tr></thead>
                     <tbody>${filas}</tbody>
                 </table>
@@ -181,13 +191,16 @@ const VISTAS = {
                 <td>${r.nombre}</td>
                 <td>${r.total_items}</td>
                 <td>${r.total_unidades}</td>
+                <td>
+                    <button class="btn-action btn-action--primary btn-editar-ubicacion" data-id="${r.id_ubicacion}" data-nombre="${r.nombre}">Editar</button>
+                </td>
             </tr>`).join("");
         return `
             <div class="view-toolbar"><h2>Ubicaciones</h2></div>
             <div class="table-scroll">
                 <table class="data-table">
                     <thead><tr>
-                        <th>Ubicación</th><th>Ítems distintos</th><th>Total unidades</th>
+                        <th>Ubicación</th><th>Ítems distintos</th><th>Total unidades</th><th>Acciones</th>
                     </tr></thead>
                     <tbody>${filas}</tbody>
                 </table>
@@ -431,12 +444,14 @@ class GestionApp {
     #content;
     #profile;
     #items;
+    #catalogos;
 
     constructor(profile) {
         this.#sidebar  = document.getElementById("sidebar-menu");
         this.#content  = document.getElementById("main-content");
         this.#profile  = profile;
         this.#items    = getModulos(profile).map(m => new MenuItem(m));
+        this.#catalogos = { periodos: [], ubicaciones: [], estados: [] };
     }
 
     init() {
@@ -466,11 +481,32 @@ class GestionApp {
             if (id === "solicitar") {
                 const [dispResp, perResp] = await Promise.all([
                     toProcess(100),
-                    toProcess(100) // placeholder — ver nota abajo
+                    toProcess(106)
                 ]);
-                if (!dispResp) return;
+                if (!dispResp || !perResp) return;
+                this.#catalogos.periodos = perResp.data ?? [];
                 this.#setContent(`<section class="view-section">${VISTAS.solicitar(dispResp.data)}</section>`);
                 this.#hookSolicitar();
+                return;
+            }
+
+            if (id === "inventario") {
+                const [invResp, ubicResp] = await Promise.all([toProcess(30), toProcess(32)]);
+                if (!invResp || !ubicResp) return;
+                this.#catalogos.ubicaciones = ubicResp.data ?? [];
+                const html = VISTAS.inventario(invResp.data);
+                this.#setContent(`<section class="view-section">${html}</section>`);
+                this.#hookInteractions(id);
+                return;
+            }
+
+            if (id === "estado") {
+                const [estadoResp, estadosResp] = await Promise.all([toProcess(40), toProcess(42)]);
+                if (!estadoResp || !estadosResp) return;
+                this.#catalogos.estados = estadosResp.data ?? [];
+                const html = VISTAS.estado(estadoResp.data);
+                this.#setContent(`<section class="view-section">${html}</section>`);
+                this.#hookInteractions(id);
                 return;
             }
 
@@ -499,6 +535,95 @@ class GestionApp {
     #hookInteractions(id) {
         if (id === "amonestaciones") this.#hookVerificarPago();
         if (id === "mi-solvencia")   this.#hookPagarAmonestacion();
+        if (id === "prestamos")      this.#hookPrestamos();
+        if (id === "inventario")     this.#hookInventario();
+        if (id === "estado")         this.#hookEstado();
+        if (id === "ubicacion")      this.#hookUbicacion();
+    }
+
+    #hookPrestamos() {
+        this.#content.querySelectorAll(".btn-anular-prestamo").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id_movimiento = Number(btn.dataset.id);
+                if (!window.confirm(`¿Anular el préstamo #${id_movimiento}?`)) return;
+                btn.disabled = true;
+                btn.textContent = "Anulando...";
+                try {
+                    await toProcess(12, [id_movimiento]);
+                    this.#activar("prestamos");
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.textContent = `⚠ ${err.message}`;
+                }
+            });
+        });
+
+        this.#content.querySelectorAll(".btn-modificar-fecha").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id_movimiento = Number(btn.dataset.id);
+                const actual = btn.dataset.fecha || "";
+                const fecha_fin = window.prompt("Nueva fecha de entrega (YYYY-MM-DD HH:mm)", actual);
+                if (!fecha_fin) return;
+                try {
+                    await toProcess(13, [{ id_movimiento, fecha_fin }]);
+                    this.#activar("prestamos");
+                } catch (err) {
+                    window.alert(err.message);
+                }
+            });
+        });
+    }
+
+    #hookInventario() {
+        this.#content.querySelectorAll(".btn-editar-inventario").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id_inventario = Number(btn.dataset.id);
+                const cantidad = window.prompt("Nueva cantidad", "");
+                if (cantidad === null) return;
+                const ubicaciones = this.#catalogos.ubicaciones.map(u => `${u.id_ubicacion}: ${u.nombre}`).join("\n");
+                const id_ubicacion = window.prompt(`Nueva ubicación (ID)\n${ubicaciones}`, "");
+                if (id_ubicacion === null) return;
+
+                try {
+                    await toProcess(31, [{ id_inventario, cantidad: Number(cantidad), id_ubicacion: Number(id_ubicacion) }]);
+                    this.#activar("inventario");
+                } catch (err) {
+                    window.alert(err.message);
+                }
+            });
+        });
+    }
+    #hookEstado() {
+        this.#content.querySelectorAll(".btn-cambiar-estado").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id_item = Number(btn.dataset.id);
+                const estados = this.#catalogos.estados.map(e => `${e.id_estado_item}: ${e.nombre}`).join("\n");
+                const id_estado_item = window.prompt(`Nuevo estado (ID)\n${estados}`, "");
+                if (id_estado_item === null) return;
+                try {
+                    await toProcess(41, [{ id_item, id_estado_item: Number(id_estado_item) }]);
+                    this.#activar("estado");
+                } catch (err) {
+                    window.alert(err.message);
+                }
+            });
+        });
+    }
+
+    #hookUbicacion() {
+        this.#content.querySelectorAll(".btn-editar-ubicacion").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id_ubicacion = Number(btn.dataset.id);
+                const nombre = window.prompt("Nuevo nombre de ubicación", btn.dataset.nombre || "");
+                if (!nombre) return;
+                try {
+                    await toProcess(51, [{ id_ubicacion, nombre }]);
+                    this.#activar("ubicacion");
+                } catch (err) {
+                    window.alert(err.message);
+                }
+            });
+        });
     }
 
     #hookVerificarPago() {
@@ -575,6 +700,13 @@ class GestionApp {
     #hookSolicitar() {
         const form = document.getElementById("formSolicitar");
         if (!form) return;
+
+        const periodoSelect = document.getElementById("periodoSolicitar");
+        if (periodoSelect) {
+            periodoSelect.innerHTML = `
+                <option value="">Seleccionar...</option>
+                ${this.#catalogos.periodos.map(p => `<option value="${p.codigo}">${p.codigo}</option>`).join("")}`;
+        }
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();

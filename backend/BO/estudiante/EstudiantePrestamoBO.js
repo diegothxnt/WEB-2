@@ -59,4 +59,9 @@ export default class EstudiantePrestamoBO {
         const result = await db.query(queries.misPrestamos.text, [req.session.user.id]);
         return result.rows;
     }
+    async periodosCatalogo(_params, _req) {
+        const result = await db.query(queries.periodosCatalogo.text, []);
+        return result.rows;
+    }
 }
+

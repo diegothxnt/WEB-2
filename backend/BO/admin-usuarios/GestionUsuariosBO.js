@@ -71,6 +71,18 @@ export default class GestionUsuariosBO {
     }
 
     /**
+     * Lista los overrides manuales de un usuario.
+     * params[0] = { id_usuario }
+     */
+    async listarOverridesDeUsuario(params, _req) {
+        const { id_usuario } = params[0] ?? {};
+        if (!id_usuario) throw new Error("id_usuario requerido");
+
+        const result = await db.query(queries.listarOverridesDeUsuario.text, [id_usuario]);
+        return result.rows;
+    }
+
+    /**
      * Elimina el override manual para un ATX específico del usuario
      * (el permiso vuelve a depender del perfil).
      * params[0] = { id_usuario, atx }

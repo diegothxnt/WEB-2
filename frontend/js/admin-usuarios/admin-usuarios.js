@@ -198,10 +198,96 @@ class AdminUsuariosApp {
 
         document.getElementById("selectUsuarioPermiso").addEventListener("change", async e => {
             const id_usuario = Number(e.target.value);
-            if (!id_usuario) return;
             const container = document.getElementById("permisosUsuarioContent");
+            if (!id_usuario) {
+                container.innerHTML = "";
+                return;
+            }
             container.innerHTML = `<p class="view-loading">Cargando permisos...</p>`;
-            container.innerHTML = `<p class="view-not-implemented">Carga de permisos individuales pendiente de implementación en GestionUsuariosClass.</p>`;
+            try {
+                const resp = await toProcess(206, [{ id_usuario }]);
+                this.#renderOverridesUsuario(id_usuario, usuarios, resp.data);
+            } catch (err) {
+                container.innerHTML = `<p class="view-not-implemented">⚠ ${err.message}</p>`;
+            }
+        });
+    }
+
+    #renderOverridesUsuario(id_usuario, usuarios, overrides) {
+        const container = document.getElementById("permisosUsuarioContent");
+        const user = usuarios.find(u => Number(u.id_usuario) === Number(id_usuario));
+        const filas = (overrides ?? []).map(o => `
+            <tr>
+                <td>${o.atx}</td>
+                <td>${o.puede_ejecutar ? "Concedido" : "Revocado"}</td>
+                <td>
+                    <button class="btn-action btn-action--primary btn-remover-override" data-atx="${o.atx}" data-id-usuario="${id_usuario}">Eliminar</button>
+                </td>
+            </tr>`).join("");
+
+        container.innerHTML = `
+            <hr class="view-divider" style="margin:20px 0">
+            <div class="view-form" style="max-width:680px">
+                <h3 style="font-family:var(--font-head);color:var(--c-navy)">Overrides de ${user ? `${user.nombre} (${user.usuario})` : `usuario #${id_usuario}`}</h3>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px">
+                    <div>
+                        <label class="form-label" for="overrideAtx">ATX</label>
+                        <input type="number" id="overrideAtx" class="form-input" placeholder="Ej: 101" min="1">
+                    </div>
+                    <div>
+                        <label class="form-label" for="overridePuedeEjecutar">Permiso</label>
+                        <select id="overridePuedeEjecutar" class="form-select">
+                            <option value="true">Conceder</option>
+                            <option value="false">Revocar</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top:12px">
+                    <button class="btn-action btn-action--primary" id="btnGuardarOverride">Guardar override</button>
+                </div>
+                <div id="feedbackOverride" class="form-feedback"></div>
+            </div>
+            <div class="table-scroll" style="margin-top:16px">
+                <table class="data-table">
+                    <thead><tr><th>ATX</th><th>Estado</th><th>Acción</th></tr></thead>
+                    <tbody>${filas || `<tr><td colspan="3">Sin overrides manuales.</td></tr>`}</tbody>
+                </table>
+            </div>`;
+
+        document.getElementById("btnGuardarOverride").addEventListener("click", async () => {
+            const atx = Number(document.getElementById("overrideAtx").value);
+            const puede_ejecutar = document.getElementById("overridePuedeEjecutar").value === "true";
+            const fb = document.getElementById("feedbackOverride");
+            if (!atx) {
+                fb.className = "form-feedback form-feedback--error visible";
+                fb.textContent = "Ingresa un ATX válido.";
+                return;
+            }
+            try {
+                await toProcess(204, [{ id_usuario, atx, puede_ejecutar }]);
+                fb.className = "form-feedback form-feedback--ok visible";
+                fb.textContent = "Override guardado.";
+                const resp = await toProcess(206, [{ id_usuario }]);
+                this.#renderOverridesUsuario(id_usuario, usuarios, resp.data);
+            } catch (err) {
+                fb.className = "form-feedback form-feedback--error visible";
+                fb.textContent = err.message;
+            }
+        });
+
+        container.querySelectorAll(".btn-remover-override").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id_usuario = Number(btn.dataset.idUsuario);
+                const atx = Number(btn.dataset.atx);
+                if (!window.confirm(`¿Eliminar el override ATX ${atx}?`)) return;
+                try {
+                    await toProcess(205, [{ id_usuario, atx }]);
+                    const resp = await toProcess(206, [{ id_usuario }]);
+                    this.#renderOverridesUsuario(id_usuario, usuarios, resp.data);
+                } catch (err) {
+                    window.alert(err.message);
+                }
+            });
         });
     }
 
